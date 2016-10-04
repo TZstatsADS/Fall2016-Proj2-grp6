@@ -14,7 +14,13 @@ library(dplyr)
 
 
 # Import filtered data
-crime_data<-fread('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data.csv')
+crime_data<-fread('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_1.csv')
+for(i in 2:20)
+{
+  input_data<-fread(paste('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_',
+                           as.character(i),'.csv',sep=''))
+  crime_data<-rbind(crime_data,input_data)
+}
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
