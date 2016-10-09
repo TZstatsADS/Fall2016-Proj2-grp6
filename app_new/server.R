@@ -21,18 +21,109 @@ f <- exp
 dshmstops <- data.frame(q = c(0, f(1:5)/f(5)), c = substring(viridis(5 + 1), 0, 7)) %>% 
   list.parse2()
 
-#######
+#######Weichuan's part
 
-setwd("~/16 fall/5243 Applied Data Science/proj 2/Fall2016-Proj2-grp6/lib")
+library(shiny)
+library(leaflet)
+library(data.table)
+library(dplyr)
+setwd("~/GitHub/Fall2016-Proj2-grp6/data")
+
+# Import filtered data
+crime_data<-fread("crime_data_1.csv")
+for(i in 2:20)
+{
+  input_data<-fread(paste("crime_data_",
+                          as.character(i),".csv",sep=''))
+  crime_data<-rbind(crime_data,input_data)
+}
+
+
+
+
+#######Minghao's part
+
+setwd("~/Github/Fall2016-Proj2-grp6/data")
 
 data <- read.csv('preddata.csv')
 
 rownames(data) <- as.Date(data$Date)
-data.xts <- as.xts(data[,3:9])
-
+data.xtss <- as.xts(data[,3:9])
+data.xts <- reclass(data.xtss, match.to = usdjpy)
 
 
 function(input, output) {
+  
+  ######map
+  #read and update the input data
+  start_date<-reactive({
+    start_date<-input$Date_Range[1]
+  })
+  
+  end_date<-reactive({
+    end_date<-input$Date_Range[2]
+  })
+  
+  crime_type<-reactive({
+    crime_type<-input$Crime_Type
+  })
+  
+  start_hour<-reactive({
+    start_hour<-input$IntHour
+  })
+  
+  end_hour<-reactive({
+    end_hour<-input$EndHour
+  })
+  
+  # subsets the crime data depending on user input in the Shiny app
+  filtered_crime_data <- reactive({
+    #filter by crime type,date range,hour
+    filtered_crime_data<-crime_data %>% 
+      filter(as.Date(crime_data$date_time,origin = "1970-01-01") >= start_date() & 
+               as.Date(crime_data$date_time,origin = "1970-01-01") <= end_date())       %>%
+      filter(Offense %in% crime_type()) %>%
+      filter(Occurrence_Hour >= start_hour() & 
+               Occurrence_Hour <= end_hour())
+  })
+  
+  #set color
+  col=c('darkred','yellow','red','deepskyblue','lightgreen','purple')
+  
+  #legend
+  var=c( "BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
+         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY")
+  
+  #color palette
+  pal <- colorFactor(col, domain = var)
+  
+  #out map
+  output$map <- renderLeaflet({
+    leaflet(data = filtered_crime_data()) %>% 
+      addProviderTiles('OpenStreetMap.Mapnik') %>% 
+      setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>% 
+      addCircles(~longitude, ~latitude, radius=40, 
+                 stroke=FALSE, fillOpacity=0.4,color=~pal(Offense),
+                 popup=~as.character(paste("Crime Type: ",Offense,
+                                           "Precinct: ",  Precinct 
+                 ))) %>%
+      addLegend("bottomleft", pal = pal, values = ~Offense,
+                title = "Crime Type",
+                opacity = 1
+      )%>% addMarkers(
+        clusterOptions = markerClusterOptions())
+  })
+  output$map2 <- renderLeaflet({
+    leaflet(data = filtered_crime_data()) %>% 
+      addProviderTiles('OpenStreetMap.Mapnik') %>% 
+      setView(lng = -73.971035, lat = 40.775659, zoom = 12) 
+    
+    
+  })
+  
+  
+  
+  
   
   hcbase <- reactive({
     # hcbase <- function() highchart() 
@@ -81,9 +172,13 @@ function(input, output) {
   output$highstock <- renderHighchart({
     
     hcbase() %>% 
+      hc_add_series_xts(data.xts[,3], name = "GRAND LARCENY") %>% 
+      hc_add_series_xts(data.xts[,2], name = "FELONY.ASSAULT") %>%
+      hc_add_series_xts(data.xts[,7], name = "ROBBERY") %>% 
       hc_add_series_xts(data.xts[,1], name = "BURGLARY") %>% 
-      hc_add_series_xts(data.xts[,2], name = "FELONY.ASSAULT") 
-    
+      hc_add_series_xts(data.xts[,4], name = "GRAND LARCENY OF MOTOR VEHICLE") %>%
+      hc_add_series_xts(data.xts[,6], name = "RAPE") %>%
+      hc_add_series_xts(data.xts[,5], name = "MURDER") 
   })
   
   output$highmap <- renderHighchart({
