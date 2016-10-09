@@ -40,7 +40,6 @@ for(i in 2:20)
 
 
 
-
 #######Minghao's part
 
 setwd("~/Github/Fall2016-Proj2-grp6/data")
