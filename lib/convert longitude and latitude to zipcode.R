@@ -64,3 +64,9 @@ save(brooklyn,file="./Fall2016-Proj2-grp6/data/crime.new/brooklyn.RData")
 save(queens,file="./Fall2016-Proj2-grp6/data/crime.new/queens.RData")
 save(manhattan,file="./Fall2016-Proj2-grp6/data/crime.new/manhattan.RData")
 save(other,file="./Fall2016-Proj2-grp6/data/crime.new/other.RData")
+
+crime_count <-  crime.new %>%
+  select (region = zip, Offense) %>%
+  group_by(region, Offense) %>%
+  dplyr::summarise(value = n())
+save(crime_count,file="./Fall2016-Proj2-grp6/data/crime_count.RData")
