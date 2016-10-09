@@ -27,12 +27,12 @@ library(leaflet)
 library(data.table)
 library(dplyr)
 
-setwd("/Users/jiwenyou/Desktop")
 
-crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
+
+crime_data<-fread('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
-  input_data<-fread(paste('Fall2016-Proj2-grp6/data/crime_data_',
+  input_data<-fread(paste('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_',
                           as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
@@ -40,7 +40,7 @@ for(i in 2:20)
 
 ####### Minghao's part
 
-data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
+data <- read.csv('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/preddata.csv')
 
 rownames(data) <- as.Date(data$Date)
 data.xts <- as.xts(data[,3:9])
@@ -119,14 +119,11 @@ function(input, output) {
   hcbase <- reactive({
     # hcbase <- function() highchart() 
     hc <- highchart() 
-    
-
     if (input$credits)
       hc <- hc %>% hc_credits(enabled = TRUE, text = "Highcharter", href = "http://jkunst.com/highcharter/")
     
     if (input$exporting)
       hc <- hc %>% hc_exporting(enabled = TRUE)
-    
     if (input$theme != FALSE) {
       theme <- switch(input$theme,
                       null = hc_theme_null(),
