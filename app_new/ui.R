@@ -10,6 +10,8 @@ library("ggplot2")
 library("treemap")
 library("forecast")
 library("DT")
+library("leaflet")
+library("data.table")
 rm(list = ls())
 
 dashboardPage(
@@ -78,8 +80,17 @@ dashboardPage(
               box(width = 6, highchartOutput("highscatter")),
               box(width = 6, highchartOutput("highstreemap")),
               box(width = 6, highchartOutput("highheatmap")),
-              box(width = 12, highchartOutput("highstock"))
+              box(width = 10, highchartOutput("highstock")),
+              box(width = 2, title = "Filter",
+                  checkboxGroupInput("Crimetype", label = "Crime Type: ",
+                                     choices = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                                 "RAPE", "MURDER"),
+                                     selected =c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                                 "RAPE", "MURDER")))
               ),
+              
       tabItem(tabName = "ts",
               fluidRow(
                 column(4, selectInput("ts", label = "Time series",
