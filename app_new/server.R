@@ -48,6 +48,12 @@ data.xts <- as.xts(data[,3:9])
 
 
 
+load("/Users/jiwenyou/Desktop/shiny/crime.new.RData")
+load("/Users/jiwenyou/Desktop/Fall2016-Proj2-grp6/data/public_count.RData")
+load("/Users/jiwenyou/Desktop/Fall2016-Proj2-grp6/data/public_whole.RData")
+load("/Users/jiwenyou/Desktop/Fall2016-Proj2-grp6/data/crime_count.RData")
+
+
 function(input, output) {
   
   #### Page 1
