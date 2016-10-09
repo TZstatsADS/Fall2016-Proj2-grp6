@@ -27,12 +27,12 @@ library(leaflet)
 library(data.table)
 library(dplyr)
 
-setwd("~/GitHub/Fall2016-Proj2-grp6/data")
+setwd("/Users/jiwenyou/Desktop")
 
-crime_data<-fread('crime_data_1.csv')
+crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
-  input_data<-fread(paste('crime_data_',
+  input_data<-fread(paste('Fall2016-Proj2-grp6/data/crime_data_',
                           as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
@@ -40,9 +40,7 @@ for(i in 2:20)
 
 ####### Minghao's part
 
-setwd("~/16 fall/5243 Applied Data Science/proj 2/Fall2016-Proj2-grp6/lib")
-
-data <- read.csv('preddata.csv')
+data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
 
 rownames(data) <- as.Date(data$Date)
 data.xts <- as.xts(data[,3:9])
