@@ -88,7 +88,15 @@ dashboardPage(
               box(width = 6, highchartOutput("highscatter")),
               box(width = 6, highchartOutput("highstreemap")),
               box(width = 6, highchartOutput("highheatmap")),
-              box(width = 12, highchartOutput("highstock")),
+              box(width = 10, highchartOutput("highstock")),
+              box(width = 2, title = "Filter",
+                  checkboxGroupInput("Crimetype", label = "Crime Type: ",
+                                     choices = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                                 "RAPE", "MURDER"),
+                                     selected =c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                                 "RAPE", "MURDER"))),
               #update button
               submitButton("Update"),
               style = "opacity : 0.85"
@@ -105,6 +113,7 @@ dashboardPage(
               box(width = 6, highchartOutput("tsacf")),
               box(width = 6, highchartOutput("tspacf"))
               ),
+    
       tabItem(tabName = "plugins",
               box(width = 12, highchartOutput("pluginsfa"))
               ),

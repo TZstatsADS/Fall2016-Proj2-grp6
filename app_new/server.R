@@ -29,7 +29,7 @@ library(dplyr)
 library(plotly)
 
 
-setwd("/Users/jiwenyou/Desktop")
+setwd("~/Github/")
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -42,10 +42,15 @@ for(i in 2:20)
 ####### Minghao's part
 
 data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
-
 rownames(data) <- as.Date(data$Date)
-data.xts <- as.xts(data[,3:9])
+data <- data[,3:9]
+colnames(data) <- c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                    "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                    "RAPE", "MURDER")
+data.xts <- as.xts(data)
 
+
+###### Jiwen's part
 
 load("Fall2016-Proj2-grp6/data/public_count.RData")
 load("Fall2016-Proj2-grp6/data/public_whole.RData")
@@ -149,6 +154,10 @@ function(input, output) {
     
   })
   
+  crimetype<-reactive({
+    crimetype<-input$Crimetype
+  })
+  
   output$highchart <- renderHighchart({
     
     hcbase() %>% 
@@ -163,16 +172,15 @@ function(input, output) {
   })
   
   output$highstock <- renderHighchart({
+    filtered_preddata <- data.xts[,crimetype()]
     
-    hcbase() %>% 
-      hc_add_series_xts(data.xts[,3], name = "GRAND LARCENY") %>% 
-      hc_add_series_xts(data.xts[,2], name = "FELONY.ASSAULT") %>%
-      hc_add_series_xts(data.xts[,7], name = "ROBBERY") %>% 
-      hc_add_series_xts(data.xts[,1], name = "BURGLARY") %>% 
-      hc_add_series_xts(data.xts[,4], name = "GRAND LARCENY OF MOTOR VEHICLE") %>%
-      hc_add_series_xts(data.xts[,6], name = "RAPE") %>%
-      hc_add_series_xts(data.xts[,5], name = "MURDER") 
+    plot_object <- hcbase() 
     
+    for(i in 1: ncol(filtered_preddata)){
+      plot_object <- plot_object %>% 
+        hc_add_series_xts(filtered_preddata[,i], name = crimetype()[i]) 
+    }
+    plot_object
   })
   
   output$highmap <- renderHighchart({
