@@ -10,6 +10,8 @@ library("ggplot2")
 library("treemap")
 library("forecast")
 library("DT")
+library(shiny)
+library(leaflet)
 rm(list = ls())
 
 dashboardPage(
@@ -36,9 +38,11 @@ dashboardPage(
                          # widget for crime type
                          checkboxGroupInput("Crime_Type", label = "Crime_Type",
                                              choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY"),
+                                                         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
+                                                         "MURDER & NON-NEGL. MANSLAUGHTE"),
                                              selected = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                          "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY")),
+                                                          "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY",
+                                                          "MURDER & NON-NEGL. MANSLAUGHTE")),
                               
                          #date range
                          dateRangeInput("Date_Range", "Choose a date range", 
@@ -71,6 +75,7 @@ dashboardPage(
                                                   "chalk"))),
                 column(4, selectInput("credits", label = "Credits enabled", choices = c(FALSE, TRUE))),
                 column(4, selectInput("exporting", label = "Exporting enabled", choices = c(FALSE, TRUE)))
+                
               ),
               box(width = 6, highchartOutput("highchart")),
               #box(width = 6, highchartOutput("highmap")),
@@ -78,7 +83,10 @@ dashboardPage(
               box(width = 6, highchartOutput("highscatter")),
               box(width = 6, highchartOutput("highstreemap")),
               box(width = 6, highchartOutput("highheatmap")),
-              box(width = 12, highchartOutput("highstock"))
+              box(width = 12, highchartOutput("highstock")),
+              #update button
+              submitButton("Update"),
+              style = "opacity : 0.85"
               ),
       tabItem(tabName = "ts",
               fluidRow(
