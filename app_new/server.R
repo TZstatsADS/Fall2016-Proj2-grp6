@@ -26,13 +26,14 @@ library(shiny)
 library(leaflet)
 library(data.table)
 library(dplyr)
+library(plotly)
 
 
-
-crime_data<-fread('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_1.csv')
+setwd("/Users/jiwenyou/Desktop")
+crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
-  input_data<-fread(paste('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_',
+  input_data<-fread(paste('Fall2016-Proj2-grp6/data/crime_data_',
                           as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
@@ -40,7 +41,7 @@ for(i in 2:20)
 
 ####### Minghao's part
 
-data <- read.csv('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/preddata.csv')
+data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
 
 rownames(data) <- as.Date(data$Date)
 data.xts <- as.xts(data[,3:9])
@@ -306,6 +307,42 @@ function(input, output) {
       hc_add_theme(hc_theme_google()) %>% 
       hc_chart(zoomType = "xy")
     
+  })
+  
+  # ptype means the public facility type
+  ptype<-reactive({
+    ptype<-input$Facility_Category
+  })
+  
+  # ctype means the crime type
+  ctype<-reactive({
+    ctype<-input$p_Crime_Type
+  })
+  
+  # subsets the facility data and crime type depending on user input in the Shiny app
+  filtered_facility_data <- reactive({
+    #filter by facility category
+    filtered_facility_data <- public_count %>% 
+      filter(NEW_CATEGORY %in% ptype()) %>%
+      rename(pvalue=value)
+  })
+  filtered_crime_data <- reactive({
+    #filter by crime type
+    filtered_facility_data <- crime_count %>% 
+      filter(Offense %in% ctype()) %>%
+      rename(cvalue=value)
+  })
+  
+  merge_data <- reactive({
+    merge_data <- full_join(filtered_facility_data(),filtered_crime_data(),by="region") %>% 
+      filter(NEW_CATEGORY != "")
+    merge_data$cvalue <- ifelse(is.na(merge_data$Offense),0,merge_data$cvalue)
+    merge_data <- as.data.frame(merge_data)
+  })
+  
+  output$facilitymap <- renderPlotly({
+    ggplot(merge_data(),aes(pvalue,cvalue))+geom_point()+geom_smooth()+
+      labs(x="Number of Public Facilities",y="Number of Crimes")
   })
   
 }
