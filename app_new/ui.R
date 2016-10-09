@@ -10,8 +10,8 @@ library("ggplot2")
 library("treemap")
 library("forecast")
 library("DT")
-library("leaflet")
-library("data.table")
+library(shiny)
+library(leaflet)
 rm(list = ls())
 
 dashboardPage(
@@ -36,11 +36,14 @@ dashboardPage(
                          h4("Filter"),
                           
                          # widget for crime type
+                         
                          checkboxGroupInput("Crime_Type", label = "Crime_Type",
                                              choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY"),
+                                                         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
+                                                         "MURDER & NON-NEGL. MANSLAUGHTE"),
                                              selected = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                          "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY")),
+                                                          "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY",
+                                                          "MURDER & NON-NEGL. MANSLAUGHTE")),
                               
                          #date range
                          dateRangeInput("Date_Range", "Choose a date range", 
@@ -50,7 +53,9 @@ dashboardPage(
                          #start and end hour
                          sliderInput("IntHour", "Start time", 0, 23, 0, step = 1),
                          sliderInput("EndHour", "End time", 0, 23, 23, step = 1),
-                              
+                        
+                         
+                     
                          #update button
                          submitButton("Update"),
                          style = "opacity : 0.85"
@@ -73,6 +78,7 @@ dashboardPage(
                                                   "chalk"))),
                 column(4, selectInput("credits", label = "Credits enabled", choices = c(FALSE, TRUE))),
                 column(4, selectInput("exporting", label = "Exporting enabled", choices = c(FALSE, TRUE)))
+                
               ),
               box(width = 6, highchartOutput("highchart")),
               #box(width = 6, highchartOutput("highmap")),
@@ -80,17 +86,11 @@ dashboardPage(
               box(width = 6, highchartOutput("highscatter")),
               box(width = 6, highchartOutput("highstreemap")),
               box(width = 6, highchartOutput("highheatmap")),
-              box(width = 10, highchartOutput("highstock")),
-              box(width = 2, title = "Filter",
-                  checkboxGroupInput("Crimetype", label = "Crime Type: ",
-                                     choices = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
-                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
-                                                 "RAPE", "MURDER"),
-                                     selected =c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
-                                                 "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
-                                                 "RAPE", "MURDER")))
+              box(width = 12, highchartOutput("highstock")),
+              #update button
+              submitButton("Update"),
+              style = "opacity : 0.85"
               ),
-              
       tabItem(tabName = "ts",
               fluidRow(
                 column(4, selectInput("ts", label = "Time series",
