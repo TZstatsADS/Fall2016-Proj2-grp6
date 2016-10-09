@@ -21,39 +21,38 @@ f <- exp
 dshmstops <- data.frame(q = c(0, f(1:5)/f(5)), c = substring(viridis(5 + 1), 0, 7)) %>% 
   list.parse2()
 
-#######Weichuan's part
-
+####### Weichuan's part
 library(shiny)
 library(leaflet)
 library(data.table)
 library(dplyr)
+
 setwd("~/GitHub/Fall2016-Proj2-grp6/data")
 
-# Import filtered data
-crime_data<-fread("crime_data_1.csv")
+crime_data<-fread('crime_data_1.csv')
 for(i in 2:20)
 {
-  input_data<-fread(paste("crime_data_",
-                          as.character(i),".csv",sep=''))
+  input_data<-fread(paste('crime_data_',
+                          as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
 
 
+####### Minghao's part
 
-#######Minghao's part
-
-setwd("~/Github/Fall2016-Proj2-grp6/data")
+setwd("~/16 fall/5243 Applied Data Science/proj 2/Fall2016-Proj2-grp6/lib")
 
 data <- read.csv('preddata.csv')
 
 rownames(data) <- as.Date(data$Date)
-data.xtss <- as.xts(data[,3:9])
-data.xts <- reclass(data.xtss, match.to = usdjpy)
+data.xts <- as.xts(data[,3:9])
+
 
 
 function(input, output) {
   
-  ######map
+  #### Page 1
+  
   #read and update the input data
   start_date<-reactive({
     start_date<-input$Date_Range[1]
@@ -112,18 +111,13 @@ function(input, output) {
       )%>% addMarkers(
         clusterOptions = markerClusterOptions())
   })
-  output$map2 <- renderLeaflet({
-    leaflet(data = filtered_crime_data()) %>% 
-      addProviderTiles('OpenStreetMap.Mapnik') %>% 
-      setView(lng = -73.971035, lat = 40.775659, zoom = 12) 
-    
-    
-  })
+
   
   
   
   
   
+  #### Page 2
   hcbase <- reactive({
     # hcbase <- function() highchart() 
     hc <- highchart() 
@@ -178,6 +172,7 @@ function(input, output) {
       hc_add_series_xts(data.xts[,4], name = "GRAND LARCENY OF MOTOR VEHICLE") %>%
       hc_add_series_xts(data.xts[,6], name = "RAPE") %>%
       hc_add_series_xts(data.xts[,5], name = "MURDER") 
+    
   })
   
   output$highmap <- renderHighchart({
