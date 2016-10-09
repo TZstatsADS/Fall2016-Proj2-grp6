@@ -27,12 +27,12 @@ library(leaflet)
 library(data.table)
 library(dplyr)
 
-setwd("~/GitHub/")
 
-crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
+
+crime_data<-fread('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
-  input_data<-fread(paste('Fall2016-Proj2-grp6/data/crime_data_',
+  input_data<-fread(paste('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/crime_data_',
                           as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
@@ -40,13 +40,10 @@ for(i in 2:20)
 
 ####### Minghao's part
 
-data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
+data <- read.csv('C:/Study/Columbia/W4243_Applied_Data_Science/Github/Project2/Fall2016-Proj2-grp6/data/preddata.csv')
+
 rownames(data) <- as.Date(data$Date)
-data <- data[,3:9]
-colnames(data) <- c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
-                    "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
-                    "RAPE", "MURDER")
-data.xts <- as.xts(data)
+data.xts <- as.xts(data[,3:9])
 
 
 
@@ -122,14 +119,11 @@ function(input, output) {
   hcbase <- reactive({
     # hcbase <- function() highchart() 
     hc <- highchart() 
-    
-
     if (input$credits)
       hc <- hc %>% hc_credits(enabled = TRUE, text = "Highcharter", href = "http://jkunst.com/highcharter/")
     
     if (input$exporting)
       hc <- hc %>% hc_exporting(enabled = TRUE)
-    
     if (input$theme != FALSE) {
       theme <- switch(input$theme,
                       null = hc_theme_null(),
@@ -150,10 +144,6 @@ function(input, output) {
     
   })
   
-  crimetype<-reactive({
-    crimetype<-input$Crimetype
-  })
-  
   output$highchart <- renderHighchart({
     
     hcbase() %>% 
@@ -168,15 +158,16 @@ function(input, output) {
   })
   
   output$highstock <- renderHighchart({
-    filtered_preddata <- data.xts[,crimetype()]
     
-    plot_object <- hcbase() 
+    hcbase() %>% 
+      hc_add_series_xts(data.xts[,3], name = "GRAND LARCENY") %>% 
+      hc_add_series_xts(data.xts[,2], name = "FELONY.ASSAULT") %>%
+      hc_add_series_xts(data.xts[,7], name = "ROBBERY") %>% 
+      hc_add_series_xts(data.xts[,1], name = "BURGLARY") %>% 
+      hc_add_series_xts(data.xts[,4], name = "GRAND LARCENY OF MOTOR VEHICLE") %>%
+      hc_add_series_xts(data.xts[,6], name = "RAPE") %>%
+      hc_add_series_xts(data.xts[,5], name = "MURDER") 
     
-    for(i in 1: ncol(filtered_preddata)){
-      plot_object <- plot_object %>% 
-        hc_add_series_xts(filtered_preddata[,i], name = crimetype()[i]) 
-    }
-    plot_object
   })
   
   output$highmap <- renderHighchart({
