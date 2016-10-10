@@ -95,7 +95,7 @@ function(input, output) {
   })
   
   #set color
-  col=c('darkred','yellow','red','deepskyblue','lightgreen','purple')
+  col=c('darkred','yellow','cyan','deepskyblue','lightgreen','red','purple')
   
   #legend
   var=c( "BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
@@ -107,7 +107,7 @@ function(input, output) {
   #out map
   output$map <- renderLeaflet({
     leaflet(data = filtered_crime_data()) %>% 
-      addProviderTiles('OpenStreetMap.Mapnik') %>% 
+      addProviderTiles('Stamen.TonerLite') %>% 
       setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>% 
       addCircles(lng=~lng, lat=~lat, radius=40, 
                  stroke=FALSE, fillOpacity=0.4,color=~pal(Offense),
@@ -191,7 +191,50 @@ function(input, output) {
       hc_colorAxis(stops = dshmstops) 
     
   })
+  ####
+  load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
+  thm<-reactive({
+    if (input$theme != FALSE) {
+      thm <- switch(input$theme,
+                    null = hc_theme_null(),
+                    economist = hc_theme_economist(),
+                    dotabuff = hc_theme_db(),
+                    darkunica = hc_theme_darkunica(),
+                    gridlight = hc_theme_gridlight(),
+                    sandsignika = hc_theme_sandsignika(),
+                    fivethirtyeight = hc_theme_538(),
+                    chalk = hc_theme_chalk(),
+                    handdrwran = hc_theme_handdrawn()
+      )}
+  })
   
+  output$highscatter <- renderHighchart({
+    
+    if(input$theme != FALSE)
+    {
+      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
+        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
+        hc_yAxis(title=list(text='Crime per person')) %>% 
+        hc_title(text = "Crime Against Income by Zipcode") %>% 
+        hc_subtitle(text = "Using 2015 crime data") %>% 
+        hc_add_theme(thm()) %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
+                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))
+    }
+    else
+    {
+      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
+        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
+        hc_yAxis(title=list(text='Crime per person')) %>% 
+        hc_title(text = "Crime Against Income by Zipcode") %>% 
+        hc_subtitle(text = "Using 2015 crime data") %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
+                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
+    }
+  })
+  ###
   
 
   output$highstreemap <- renderHighchart({
