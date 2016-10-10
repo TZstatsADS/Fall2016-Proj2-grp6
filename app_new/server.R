@@ -94,7 +94,7 @@ function(input, output) {
   })
   
   #set color
-  col=c('darkred','yellow','red','deepskyblue','lightgreen','purple')
+  col=c('darkred','yellow','cyan','deepskyblue','lightgreen','red','purple')
   
   #legend
   var=c( "BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
@@ -106,7 +106,7 @@ function(input, output) {
   #out map
   output$map <- renderLeaflet({
     leaflet(data = filtered_crime_data()) %>% 
-      addProviderTiles('OpenStreetMap.Mapnik') %>% 
+      addProviderTiles('Stamen.TonerLite') %>% 
       setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>% 
       addCircles(~longitude, ~latitude, radius=40, 
                  stroke=FALSE, fillOpacity=0.4,color=~pal(Offense),
@@ -193,7 +193,7 @@ function(input, output) {
   
   
   ####
-  load('crime_against_income_data.RData')
+  load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
   thm<-reactive({
     if (input$theme != FALSE) {
       thm <- switch(input$theme,
