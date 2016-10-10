@@ -6,13 +6,13 @@ library("viridisLite")
 library("markdown")
 library("quantmod")
 library("tidyr")
-library("ggplot2")
+#library("ggplot2")
 library("treemap")
 library("forecast")
 library("DT")
 library(shiny)
 library(leaflet)
-library(plotly)
+#library(plotly)
 rm(list = ls())
 
 dashboardPage(
@@ -144,7 +144,7 @@ dashboardPage(
                             ),
                             mainPanel(
                               #plotOutput("facilitymap", width = "100%", height = 700)
-                              plotlyOutput("facilitymap", width = "100%", height = 700)
+                              highchartOutput("facilitymap", width = "100%", height = 700)
                             ))
               )
       )

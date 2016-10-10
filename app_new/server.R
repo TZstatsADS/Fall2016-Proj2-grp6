@@ -26,10 +26,10 @@ library(shiny)
 library(leaflet)
 library(data.table)
 library(dplyr)
-library(plotly)
+#library(plotly)
 
 
-setwd("~/Github/")
+setwd("/Users/jiwenyou/Desktop")
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -37,7 +37,8 @@ for(i in 2:20)
                           as.character(i),'.csv',sep=''))
   crime_data<-rbind(crime_data,input_data)
 }
-
+names(crime_data)[names(crime_data)=='latitude']<-'lat'
+names(crime_data)[names(crime_data)=='longitude']<-'lng'
 
 ####### Minghao's part
 
@@ -108,7 +109,7 @@ function(input, output) {
     leaflet(data = filtered_crime_data()) %>% 
       addProviderTiles('OpenStreetMap.Mapnik') %>% 
       setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>% 
-      addCircles(~longitude, ~latitude, radius=40, 
+      addCircles(lng=~lng, lat=~lat, radius=40, 
                  stroke=FALSE, fillOpacity=0.4,color=~pal(Offense),
                  popup=~as.character(paste("Crime Type: ",Offense,
                                            "Precinct: ",  Precinct 
@@ -191,19 +192,8 @@ function(input, output) {
     
   })
   
-  output$highscatter <- renderHighchart({
-    
-    hcbase() %>% 
-      hc_add_series_scatter(mtcars$wt, mtcars$mpg,
-                            mtcars$drat, mtcars$hp,
-                            rownames(mtcars),
-                            dataLabels = list(
-                              enabled = TRUE,
-                              format = "{point.label}"
-                            ))
-    
-  })
   
+
   output$highstreemap <- renderHighchart({
     
     hcbase() %>% 
@@ -338,23 +328,71 @@ function(input, output) {
       filter(NEW_CATEGORY %in% ptype()) %>%
       rename(pvalue=value)
   })
-  filtered_crime_data <- reactive({
+  filtered_p_crime_data <- reactive({
     #filter by crime type
-    filtered_facility_data <- crime_count %>% 
+    filtered_p_crime_data <- crime_count %>% 
       filter(Offense %in% ctype()) %>%
       rename(cvalue=value)
   })
   
   merge_data <- reactive({
-    merge_data <- full_join(filtered_facility_data(),filtered_crime_data(),by="region") %>% 
+    merge_data <- full_join(filtered_facility_data(),filtered_p_crime_data(),by="region") %>% 
       filter(NEW_CATEGORY != "")
     merge_data$cvalue <- ifelse(is.na(merge_data$Offense),0,merge_data$cvalue)
+    merge_data$Offense <- ifelse(is.na(merge_data$Offense),merge_data$Offense[which(is.na(merge_data$Offense))-1],merge_data$Offense)
+    merge_data <- mutate(merge_data,colour=as.character(Offense))
     merge_data <- as.data.frame(merge_data)
+    #lw <- loess(cvalue ~ pvalue, merge_data())
+    #fit <- cbind(merge_data$pvalue,lw$fitted)
   })
   
-  output$facilitymap <- renderPlotly({
-    ggplot(merge_data(),aes(pvalue,cvalue))+geom_point()+geom_smooth()+
-      labs(x="Number of Public Facilities",y="Number of Crimes")
+  #output$facilitymap <- renderPl({
+    #ggplot(merge_data(),aes(pvalue,cvalue))+geom_point()+geom_smooth()+
+      #labs(x="Number of Public Facilities",y="Number of Crimes")
+    
+  #})
+  
+  thm<-reactive({
+    if (input$theme != FALSE) {
+      thm <- switch(input$theme,
+                    null = hc_theme_null(),
+                    economist = hc_theme_economist(),
+                    dotabuff = hc_theme_db(),
+                    darkunica = hc_theme_darkunica(),
+                    gridlight = hc_theme_gridlight(),
+                    sandsignika = hc_theme_sandsignika(),
+                    fivethirtyeight = hc_theme_538(),
+                    chalk = hc_theme_chalk(),
+                    handdrwran = hc_theme_handdrawn()
+      )}
   })
   
+  
+  output$facilitymap <- renderHighchart({
+    
+    if(input$theme != FALSE)
+    {
+      hchart(merge_data(), "point", x = pvalue, y = cvalue, group = colour) %>% 
+        hc_xAxis(title=list(text = 'Number of Public Facilities')) %>% 
+        hc_yAxis(title=list(text='Number of Crimes')) %>% 
+        hc_title(text = "Crime Against Public Facility distribution by Zipcode") %>% 
+        #hc_subtitle(text = "Using 2015 crime data") %>% 
+        hc_add_theme(thm()) %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
+                                               sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
+    }
+    else
+    {
+      hchart(merge_data(), "point", x = pvalue, y = cvalue, group = colour) %>% 
+        hc_xAxis(title=list(text = 'Number of Public Facilities')) %>% 
+        hc_yAxis(title=list(text='Number of Crimes')) %>% 
+        hc_title(text = "Crime Against Public Facility distribution by Zipcode") %>% 
+        #hc_subtitle(text = "Using 2015 crime data") %>% 
+        #hc_add_theme(thm()) %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
+                                               sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
+    }
+  })
 }
