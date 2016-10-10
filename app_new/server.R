@@ -338,7 +338,7 @@ function(input, output) {
       filter(NEW_CATEGORY %in% ptype()) %>%
       rename(pvalue=value)
   })
-  filtered_crime_data <- reactive({
+  filtered_p_crime_data <- reactive({
     #filter by crime type
     filtered_facility_data <- crime_count %>% 
       filter(Offense %in% ctype()) %>%
@@ -346,7 +346,7 @@ function(input, output) {
   })
   
   merge_data <- reactive({
-    merge_data <- full_join(filtered_facility_data(),filtered_crime_data(),by="region") %>% 
+    merge_data <- full_join(filtered_facility_data(),filtered_p_crime_data(),by="region") %>% 
       filter(NEW_CATEGORY != "")
     merge_data$cvalue <- ifelse(is.na(merge_data$Offense),0,merge_data$cvalue)
     merge_data <- as.data.frame(merge_data)
