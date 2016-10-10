@@ -29,7 +29,7 @@ library(dplyr)
 library(plotly)
 
 
-setwd("~/Github/")
+setwd("C:/Study/Columbia/W4243_Applied_Data_Science/Project2/")
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
