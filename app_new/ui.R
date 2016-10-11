@@ -24,7 +24,7 @@ dashboardPage(
       menuItem("Time Series", tabName = "ts", icon = icon("line-chart")),
       menuItem("Public Facilities Allocation",tabName = "public", icon = icon("list-alt")),
       menuItem("311 Complaint",tabName = "311", icon = icon("bar-chart")),
-      menuItem("Prediction", tabName = "predict", icon = icon("line-chart"))
+      menuItem("Prediction", tabName = "predict", icon = icon("table"))
     ),
     div(includeMarkdown("crimeinfo.md"), style = "padding:10px")
   ),
@@ -164,11 +164,6 @@ dashboardPage(
       
       ################################################################################################                   
       tabItem(tabName = "predict",
-              fluidRow(
-                column(6, selectInput("ts", label = "Time series",
-                                      choices = c("WWWusage", "AirPassengers",
-                                                  "ldeaths", "USAccDeaths")))
-              ),
               box(width = 12, highchartOutput("highscatter"))
       )
       )
