@@ -55,17 +55,16 @@ dashboardPage(
                          #start and end hour
                          sliderInput("IntHour", "Start time", 0, 23, 0, step = 1),
                          sliderInput("EndHour", "End time", 0, 23, 23, step = 1),
-                        
                          
-                     
+                         h4("Click the Update button to see the map: "),
                          #update button
-                         submitButton("Update"),
-                         style = "opacity : 0.85"
-                             ),
+                         actionButton("button", "Update", 
+                         style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
+                  ),
                             
                   mainPanel(
-                            leafletOutput("map", width = "100%", height = 700)
-                           )
+                            leafletOutput("map", width = "100%", height = 650)
+                  )
               )
       ), 
               
@@ -96,10 +95,9 @@ dashboardPage(
                                                  "RAPE", "MURDER"),
                                      selected =c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
                                                  "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
-                                                 "RAPE", "MURDER"))),
-              #update button
-              submitButton("Update"),
-              style = "opacity : 0.85"
+                                                 "RAPE", "MURDER")), 
+                  actionButton("button2", "Update", 
+                               style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
               ),
       tabItem(tabName = "ts",
               fluidRow(
@@ -136,15 +134,11 @@ dashboardPage(
                                                  choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
                                                              "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY","MURDER & NON-NEGL. MANSLAUGHTE"),
                                                  selected = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                              "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY","MURDER & NON-NEGL. MANSLAUGHTE")),
-                              
-                              #update button
-                              submitButton("Update"),
-                              style = "opacity : 0.85"
+                                                              "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY","MURDER & NON-NEGL. MANSLAUGHTE"))
                             ),
                             mainPanel(
                               #plotOutput("facilitymap", width = "100%", height = 700)
-                              highchartOutput("facilitymap", width = "100%", height = 700)
+                              highchartOutput("facilitymap", width = "100%", height = 650)
                             ))
               )
       )

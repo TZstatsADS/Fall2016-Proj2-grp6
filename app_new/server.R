@@ -70,28 +70,30 @@ function(input, output) {
   #### Page 1
   
   #read and update the input data
-  start_date<-reactive({
+  start_date<-eventReactive(input$button, {
     start_date<-input$Date_Range[1]
   })
   
-  end_date<-reactive({
+  end_date<-eventReactive(input$button, {
+    input$button
     end_date<-input$Date_Range[2]
   })
   
-  crime_type<-reactive({
+  crime_type<-eventReactive(input$button, {
+    input$button
     crime_type<-input$Crime_Type
   })
   
-  start_hour<-reactive({
+  start_hour<-eventReactive(input$button, {
     start_hour<-input$IntHour
   })
   
-  end_hour<-reactive({
+  end_hour<-eventReactive(input$button, {
     end_hour<-input$EndHour
   })
   
   # subsets the crime data depending on user input in the Shiny app
-  filtered_crime_data <- reactive({
+  filtered_crime_data <- eventReactive(input$button, {
     #filter by crime type,date range,hour
     filtered_crime_data<-crime_data %>% 
       filter(as.Date(crime_data$date_time,origin = "1970-01-01") >= start_date() & 
@@ -113,6 +115,7 @@ function(input, output) {
   
   #out map
   output$map <- renderLeaflet({
+    
     leaflet(data = filtered_crime_data()) %>% 
       addProviderTiles('Stamen.TonerLite') %>% 
       setView(lng = -73.971035, lat = 40.775659, zoom = 12) %>% 
@@ -123,8 +126,8 @@ function(input, output) {
                  ))) %>%
       addLegend("bottomleft", pal = pal, values = ~Offense,
                 title = "Crime Type",
-                opacity = 1
-      )%>% addMarkers(
+                opacity = 1 )%>% 
+      addMarkers(
         clusterOptions = markerClusterOptions())
   })
 
@@ -135,7 +138,7 @@ function(input, output) {
   
   #### Page 2
   hcbase <- reactive({
-    # hcbase <- function() highchart() 
+    
     hc <- highchart() 
     if (input$credits)
       hc <- hc %>% hc_credits(enabled = TRUE, text = "Highcharter", href = "http://jkunst.com/highcharter/")
@@ -162,8 +165,11 @@ function(input, output) {
     
   })
   
-  crimetype<-reactive({
-    crimetype<-input$Crimetype
+  crime <- reactiveValues(type = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                      "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                      "RAPE", "MURDER"))
+  observeEvent(input$button2, {
+    crime$type <- input$Crimetype
   })
   
   output$highchart <- renderHighchart({
@@ -180,24 +186,18 @@ function(input, output) {
   })
   
   output$highstock <- renderHighchart({
-    filtered_preddata <- data.xts[,crimetype()]
+    filtered_preddata <- data.xts[,crime$type]
     
     plot_object <- hcbase() %>% hc_title(text = "Crime Time Series By Crime Type")
     
     for(i in 1: ncol(filtered_preddata)){
       plot_object <- plot_object %>% 
-        hc_add_series_xts(filtered_preddata[,i], name = crimetype()[i]) 
+        hc_add_series_xts(filtered_preddata[,i], name = crime$type[i]) 
     }
     plot_object
   })
   
-  output$highmap <- renderHighchart({
-    
-    hcbase() %>% 
-      hc_add_series_map(worldgeojson, GNI2010, value = "GNI", joinBy = "iso3") %>% 
-      hc_colorAxis(stops = dshmstops) 
-    
-  })
+
   ####
   load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
   thm<-reactive({
