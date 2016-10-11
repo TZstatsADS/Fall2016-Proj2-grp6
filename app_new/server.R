@@ -65,6 +65,8 @@ barplotdata<-read.csv("Fall2016-Proj2-grp6/data/barplotdata.csv",stringsAsFactor
 ###### Prediction datasets
 
 load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
+
+
 function(input, output) {
   
   #### Map ######################################################################
@@ -289,7 +291,6 @@ function(input, output) {
         hc_yAxis(title=list(text='Number of Crimes')) %>% 
         hc_title(text = "Crime Against Public Facility distribution by Zipcode") %>% 
         #hc_subtitle(text = "Using 2015 crime data") %>% 
-        hc_add_theme(thm()) %>% 
         hc_tooltip(useHTML = TRUE, headerFormat = "", 
                    pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
                                                sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
