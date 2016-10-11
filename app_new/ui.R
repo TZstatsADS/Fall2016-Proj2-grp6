@@ -167,7 +167,8 @@ dashboardPage(
       
       ################################################################################################                   
       tabItem(tabName = "predict",
-              box(width = 12, highchartOutput("highscatter"))
+              box(width = 12, highchartOutput("highscatter")),
+              box(width = 6, plotlyOutput("crime_30_days"))
       )
       )
     )

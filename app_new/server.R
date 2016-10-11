@@ -3,7 +3,7 @@ library(leaflet)
 library(data.table)
 
 
-setwd("/Users/jiwenyou/desktop")
+setwd("C:/Study/Columbia/W4243_Applied_Data_Science/Project2/")
 
 
 ###### Crime map datasets
@@ -454,5 +454,25 @@ function(input, output) {
                                                sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
     }
   })
+  
+  #########################################################################
+  load('Fall2016-Proj2-grp6/data/murder_result.RData')
+  load('Fall2016-Proj2-grp6/data/other_result.RData')
+  murder_slices<-murder_result$crime_count
+  other_slices<-other_result$crime_count
+  lbls <- c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY", "GRAND LARCENY OF MOTOR VEHICLE",
+            "MURDER & NON-NEGL. MANSLAUGHTE",'ROBBERY',"RAPE")
+  murder_pct <- round(murder_slices/sum(murder_slices),2)
+  other_pct <- round(other_slices/sum(other_slices),2)
+  crime_data_30days <- data.frame(lbls, murder_pct, other_pct)
+  
+  output$crime_30_days <- renderPlotly({
+    plot_ly(crime_data_30days, x =lbls, y =murder_pct, type = 'bar', name = 'Murder Pct') %>%
+      add_trace(x=lbls,y = other_pct, type='bar',name = 'Other Pct') %>%
+      layout(title='30 days accumulated Crime Compare',
+             yaxis = list(title = 'Percent'), barmode = 'group')
+  })
+  
+  ########################################################################
   
 }
