@@ -3,7 +3,7 @@ library(leaflet)
 library(data.table)
 
 
-setwd("C:/Study/Columbia/W4243_Applied_Data_Science/Project2/")
+setwd("~/Github/")
 
 
 ###### Crime map datasets
@@ -21,12 +21,13 @@ names(crime_data)[names(crime_data)=='longitude']<-'lng'
 
 ###### Time series analysis datasets
 
-data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
-rownames(data) <- seq.Date(as.Date("2006-01-01"), as.Date("2015-12-31"), "days")
-data <- data[,3:9]
+dat <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
+rownames(dat) <- seq.Date(as.Date("2006-01-01"), as.Date("2015-12-31"), "days")
+data <- dat[,3:9]
 colnames(data) <- c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
                     "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
                     "RAPE", "MURDER")
+data.ts <- cbind(data, Date = dat$Date)
 data.xts <- as.xts(data)
 data.mon <- apply.monthly(data.xts, mean)
 data.mon.sum <- apply(data.mon, 1, sum)
@@ -39,6 +40,9 @@ stops <- data.frame(q = 0:4/4,
                     c = rev(substring(heat.colors(4 + 1), 0, 7)),
                     stringsAsFactors = FALSE)
 stops <- list_parse2(stops)
+
+load("Fall2016-Proj2-grp6/data/fit.RData")
+
 
 
 ###### Public Facility Allocation datasets
@@ -176,17 +180,8 @@ function(input, output) {
     crime$type <- input$Crimetype
   })
   
-  output$highchart <- renderHighchart({
-    
-    hcbase() %>% 
-      hc_title(text = "Monthly Average Temperature") %>% 
-      hc_subtitle(text = "Source: WorldClimate.com") %>% 
-      hc_yAxis(title = list(text = "Temperature")) %>% 
-      hc_xAxis(categories = citytemp$month) %>% 
-      hc_add_series(name = "Tokyo", data = citytemp$tokyo) %>% 
-      hc_add_series(name = "London", data = citytemp$london) %>% 
-      hc_add_series(name = "Berlin", data = citytemp$berlin) 
-    
+  ts.ct <- reactive({
+    ts.ct <- input$ct
   })
   
   output$highstock <- renderHighchart({
@@ -194,10 +189,22 @@ function(input, output) {
     
     plot_object <- hcbase() %>% hc_title(text = "Crime Time Series By Crime Type")
     
-    for(i in 1: ncol(filtered_preddata)){
+    if (length(crime$type)==2){
       plot_object <- plot_object %>% 
-        hc_add_series_xts(filtered_preddata[,i], name = crime$type[i]) 
+        hc_yAxis_multiples(
+          list(title = list(text = crime$type[1])), 
+          list(title = list(text = crime$type[2]))
+        ) %>%
+        hc_add_series_xts(filtered_preddata[,1], name = crime$type[1]) %>%
+        hc_add_series_xts(filtered_preddata[,2], name = crime$type[2], yAxis = 1)
+      
+    } else {
+      for(i in 1: ncol(filtered_preddata)){
+        plot_object <- plot_object %>% 
+          hc_add_series_xts(filtered_preddata[,i], name = crime$type[i]) 
+      }
     }
+    
     plot_object
   })
   
@@ -214,34 +221,22 @@ function(input, output) {
     
   })
   
-  output$tsforecast <- renderHighchart({
-    
-    ts <- ts()
-    # highcharter:::hchart.forecast
-    object <- forecast(ts, level = 95)
-    tmf <- datetime_to_timestamp(zoo::as.Date(time(object$mean)))
-    nmf <- paste("level", object$level)
-    
-    dsf <- data_frame(tmf, object$mean) %>% 
-      list.parse2()
-    
-    highchart() %>% 
-      hc_add_series_ts(object$x, name = input$ts) %>% 
-      hc_add_series(data = dsf, name = "AutoArima Forecast",
-                    marker = list(enabled = FALSE),
-                    enableMouseTracking = FALSE) %>% 
-      hc_add_series(data = dsf, name = "Your Forecast",
-                    cursor = "ns-resize", draggableY = TRUE) %>% 
-      hc_plotOptions(
-        series = list(
-          point = list(
-            events = list(
-              drop = JS("function(){
-                        console.log(this.series)
-                        window.data = _.map(this.series.data, function(e) { return e.y })
-                        Shiny.onInputChange('manualforecast', data);
-                        }"))
-              )))
+  output$forecast <- renderPlot({
+    if (ts.ct() %in% "GRAND LARCENY") {
+      plot(forecast(GL.fit), main = ts.ct())
+    } else if (ts.ct() %in% "FELONY ASSAULT"){
+      plot(forecast(FA.fit), main = ts.ct())
+    } else if (ts.ct() %in% "ROBBERY"){
+      plot(forecast(RO.fit), main = ts.ct())
+    } else if (ts.ct() %in% "BURGLARY"){
+      plot(forecast(BU.fit), main = ts.ct())
+    } else if (ts.ct() %in% "GRAND LARCENY OF MOTOR VEHICLE"){
+      plot(forecast(MV.fit), main = ts.ct())
+    } else if (ts.ct() %in% "RAPE"){
+      plot(forecast(RA.fit), main = ts.ct())
+    } else if (ts.ct() %in% "MURDER"){
+      plot(forecast(MU.fit), main = ts.ct())
+    } 
     
   })
   

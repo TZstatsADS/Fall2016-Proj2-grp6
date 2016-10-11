@@ -81,7 +81,6 @@ dashboardPage(
                 column(4, selectInput("exporting", label = "Exporting enabled", choices = c(FALSE, TRUE)))
                 
               ),
-              box(width = 12, highchartOutput("highheatmap")),
               box(width = 10, highchartOutput("highstock")),
               box(width = 2, title = "Filter",
                   checkboxGroupInput("Crimetype", label = "Crime Type: ",
@@ -92,7 +91,15 @@ dashboardPage(
                                                  "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
                                                  "RAPE", "MURDER")), 
                   actionButton("button2", "Update", 
-                               style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
+                               style="color: #fff; background-color: #337ab7; border-color: #2e6da4")), 
+              box(width = 12, highchartOutput("highheatmap")),
+              fluidRow(
+                column(4, selectInput("ct", label = "Crime Type: ",
+                                      choices = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
+                                                  "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
+                                                  "RAPE", "MURDER")))
+              ),
+              box(width = 12, plotOutput("forecast"))
               ),
       
       ################################################################################################              
