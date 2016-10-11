@@ -1,30 +1,13 @@
-usdjpy <- getSymbols("USD/JPY", src = "oanda", auto.assign = FALSE)
-eurkpw <- getSymbols("EUR/KPW", src = "oanda", auto.assign = FALSE)
-
-data(citytemp, package = "highcharter")
-data(worldgeojson, package = "highcharter")
-data(sample_matrix, package = "xts")
-#data(GNI2010, package = "treemap")
-data(diamonds, package = "ggplot2")
-
-dscounts <- dplyr::count(diamonds, cut) %>% 
-  setNames(c("name", "value")) %>% 
-  list.parse3()
-
-f <- exp
-
-dshmstops <- data.frame(q = c(0, f(1:5)/f(5)), c = substring(viridis(5 + 1), 0, 7)) %>% 
-  list.parse2()
-
-####### Weichuan's part
 library(shiny)
 library(leaflet)
 library(data.table)
-library(dplyr)
-#library(plotly)
 
 
-setwd("/Users/yueqizhang/Documents/w5243 ads/project2")
+setwd("/Users/jiwenyou/desktop")
+
+
+###### Crime map datasets
+
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -35,7 +18,8 @@ for(i in 2:20)
 names(crime_data)[names(crime_data)=='latitude']<-'lat'
 names(crime_data)[names(crime_data)=='longitude']<-'lng'
 
-####### Minghao's part
+
+###### Time series analysis datasets
 
 data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
 rownames(data) <- seq.Date(as.Date("2006-01-01"), as.Date("2015-12-31"), "days")
@@ -57,15 +41,15 @@ stops <- data.frame(q = 0:4/4,
 stops <- list_parse2(stops)
 
 
-
-###### Jiwen's part
+###### Public Facility Allocation datasets
 
 load("Fall2016-Proj2-grp6/data/public_count.RData")
 load("Fall2016-Proj2-grp6/data/public_whole.RData")
 load("Fall2016-Proj2-grp6/data/crime_count.RData")
 
 
-###### Yueqi's part
+###### 311 complaints datasets
+
 normal<-read.csv("Fall2016-Proj2-grp6/data/type of 311 normal.csv")
 crime<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime.csv")
 crime.murder<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime murder.csv")
@@ -78,9 +62,12 @@ crime.robbery<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime ROBBERY
 barplotdata<-read.csv("Fall2016-Proj2-grp6/data/barplotdata.csv",stringsAsFactors = FALSE)
 
 
+###### Prediction datasets
+
+load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
 function(input, output) {
   
-  #### Page 1
+  #### Map ######################################################################
   
   #read and update the input data
   start_date<-eventReactive(input$button, {
@@ -146,10 +133,10 @@ function(input, output) {
 
   
   
+  ################################################################################  
   
   
-  
-  #### Page 2
+  #### Theme #####################################################################
   hcbase <- reactive({
     
     hc <- highchart() 
@@ -177,6 +164,8 @@ function(input, output) {
     hc
     
   })
+  
+  ################################################################################  
   
   crime <- reactiveValues(type = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
                                       "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
@@ -211,67 +200,8 @@ function(input, output) {
   })
   
 
-  ####
-  load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
-  thm<-reactive({
-    if (input$theme != FALSE) {
-      thm <- switch(input$theme,
-                    null = hc_theme_null(),
-                    economist = hc_theme_economist(),
-                    dotabuff = hc_theme_db(),
-                    darkunica = hc_theme_darkunica(),
-                    gridlight = hc_theme_gridlight(),
-                    sandsignika = hc_theme_sandsignika(),
-                    fivethirtyeight = hc_theme_538(),
-                    chalk = hc_theme_chalk(),
-                    handdrwran = hc_theme_handdrawn()
-      )}
-  })
-  
-  output$highscatter <- renderHighchart({
-    
-    if(input$theme != FALSE)
-    {
-      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
-        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
-        hc_yAxis(title=list(text='Crime per person')) %>% 
-        hc_title(text = "Crime Against Income by Zipcode") %>% 
-        hc_subtitle(text = "Using 2015 crime data") %>% 
-        hc_add_theme(thm()) %>% 
-        hc_tooltip(useHTML = TRUE, headerFormat = "", 
-                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
-                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))
-    }
-    else
-    {
-      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
-        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
-        hc_yAxis(title=list(text='Crime per person')) %>% 
-        hc_title(text = "Crime Against Income by Zipcode") %>% 
-        hc_subtitle(text = "Using 2015 crime data") %>% 
-        hc_tooltip(useHTML = TRUE, headerFormat = "", 
-                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
-                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
-    }
-  })
-  
-
-  output$highstreemap <- renderHighchart({
-    
-    hcbase() %>% 
-      hc_add_series(data = dscounts, type = "treemap", colorByPoint = TRUE) 
-    
-  })
-  
-  output$highohlc <- renderHighchart({
-    
-    hcbase() %>% 
-      hc_add_series_ohlc(as.xts(sample_matrix))
-    
-  })
-
   output$highheatmap <- renderHighchart({
-    
+    dsheatmap <- lapply(dsheatmap, sapply,round)
     hcbase() %>% 
       hc_title(text = "Monthly Total Crime Number") %>%
       hc_chart(type = "heatmap") %>% 
@@ -281,21 +211,6 @@ function(input, output) {
       hc_colorAxis(stops = stops, min = 200, max = 400) 
     
   })
-  
-  
-  
-  ####### Page 3
-  ts <- reactive({
-    
-    get(input$ts)
-    
-  })
-  
-  output$tschart <- renderHighchart({hchart(ts())})
-  
-  output$tsacf <- renderHighchart({hchart(acf(ts(), plot = FALSE))})
-  
-  output$tspacf <- renderHighchart({hchart(pacf(ts(), plot = FALSE))})
   
   output$tsforecast <- renderHighchart({
     
@@ -328,54 +243,7 @@ function(input, output) {
     
   })
   
-  output$dfforecast <- renderDataTable({
-    
-    ts <- ts()
-    mf <- input$manualforecast #listening the drop event defined in output$tsforecast
-    fc <- forecast(ts)$mean
-    
-    # if you change timeseries input$manualforecast dont change
-    # so we update it
-    if (is.null(mf) || length(mf) != length(fc))  
-      mf <- fc
-    
-    data_frame(
-      datetime = as.Date(time(forecast(ts)$mean)),
-      forecast = fc,
-      manualforecast = mf,
-      diff = round((mf - fc)/fc, 2)
-    )
-    
-  })
-  
-  output$pluginsfa <- renderHighchart({
-    title <- tags$div(icon("quote-left"), "This is a h1 title with a awesome icon", icon("bar-chart"))
-    title <- as.character(title)
-    
-    subtitle <- tags$div("This can be", icon("thumbs-o-up"), "wait for it... awesome")
-    subtitle <- as.character(subtitle)
-    
-    # https://github.com/FortAwesome/Font-Awesome/blob/master/less/variables.less
-    
-    highchart() %>%
-      hc_title(text = title, useHTML = TRUE) %>% 
-      hc_subtitle(text = subtitle, useHTML = TRUE) %>% 
-      hc_tooltip(
-        useHTML = TRUE,
-        pointFormat = '<span style="color:{series.color};">{series.options.icon}</span> {series.name}: <b>[{point.x}, {point.y}]</b><br/>'
-      ) %>% 
-      hc_add_series_scatter(mtcars$mpg[1:16], mtcars$disp[1:16],
-                            marker = list(symbol = "text:\\\uf1b9"),
-                            icon = as.character(shiny::icon("car")),
-                            name = "cars", showInLegend = TRUE) %>% 
-      hc_add_series_scatter(mtcars$mpg[17:32], mtcars$disp[17:32],
-                            marker = list(symbol = "text:\\\uf1ba"),
-                            icon = as.character(shiny::icon("taxi")),
-                            name = "cabs", showInLegend = TRUE)  %>% 
-      hc_add_theme(hc_theme_google()) %>% 
-      hc_chart(zoomType = "xy")
-    
-  })
+  #### Public Facility Allocation ######################################################################
   
   # ptype means the public facility type
   ptype<-reactive({
@@ -415,32 +283,7 @@ function(input, output) {
     #fit <- cbind(merge_data$pvalue,lw$fitted)
   })
   
-  #output$facilitymap <- renderPl({
-    #ggplot(merge_data(),aes(pvalue,cvalue))+geom_point()+geom_smooth()+
-      #labs(x="Number of Public Facilities",y="Number of Crimes")
-    
-  #})
-  
-  thm<-reactive({
-    if (input$theme != FALSE) {
-      thm <- switch(input$theme,
-                    null = hc_theme_null(),
-                    economist = hc_theme_economist(),
-                    dotabuff = hc_theme_db(),
-                    darkunica = hc_theme_darkunica(),
-                    gridlight = hc_theme_gridlight(),
-                    sandsignika = hc_theme_sandsignika(),
-                    fivethirtyeight = hc_theme_538(),
-                    chalk = hc_theme_chalk(),
-                    handdrwran = hc_theme_handdrawn()
-      )}
-  })
-  
-  
   output$facilitymap <- renderHighchart({
-    
-    if(input$theme != FALSE)
-    {
       hchart(merge_data(), "point", x = pvalue, y = cvalue, group = colour) %>% 
         hc_xAxis(title=list(text = 'Number of Public Facilities')) %>% 
         hc_yAxis(title=list(text='Number of Crimes')) %>% 
@@ -450,23 +293,12 @@ function(input, output) {
         hc_tooltip(useHTML = TRUE, headerFormat = "", 
                    pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
                                                sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
-    }
-    else
-    {
-      hchart(merge_data(), "point", x = pvalue, y = cvalue, group = colour) %>% 
-        hc_xAxis(title=list(text = 'Number of Public Facilities')) %>% 
-        hc_yAxis(title=list(text='Number of Crimes')) %>% 
-        hc_title(text = "Crime Against Public Facility distribution by Zipcode") %>% 
-        #hc_subtitle(text = "Using 2015 crime data") %>% 
-        #hc_add_theme(thm()) %>% 
-        hc_tooltip(useHTML = TRUE, headerFormat = "", 
-                   pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
-                                               sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
-    }
   })
   
+  ##################################################################################
   
-  # Page 311
+  #### 311 Complaints #############################################################
+
   crime.type<-reactive({
     crime.type<-input$Crime.Type
   })
@@ -575,4 +407,51 @@ function(input, output) {
     g<-ggplot(barplotdata,aes(x=Type,fill=Crime))+geom_bar(position="dodge")+xlab(" ")+ylab("Complaint Number")+theme(axis.text.x=element_text(vjust = 1, hjust = 0.5,angle = 45))
     ggplotly(g)
   })
+  
+  ##################################################################################
+  
+  ##### Prediction #######################################################################
+  
+  thm<-reactive({
+    if (input$theme != FALSE) {
+      thm <- switch(input$theme,
+                    null = hc_theme_null(),
+                    economist = hc_theme_economist(),
+                    dotabuff = hc_theme_db(),
+                    darkunica = hc_theme_darkunica(),
+                    gridlight = hc_theme_gridlight(),
+                    sandsignika = hc_theme_sandsignika(),
+                    fivethirtyeight = hc_theme_538(),
+                    chalk = hc_theme_chalk(),
+                    handdrwran = hc_theme_handdrawn()
+      )}
+  })
+  
+  output$highscatter <- renderHighchart({
+    
+    if(input$theme != FALSE)
+    {
+      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
+        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
+        hc_yAxis(title=list(text='Crime per person')) %>% 
+        hc_title(text = "Crime Against Income by Zipcode") %>% 
+        hc_subtitle(text = "Using 2015 crime data") %>% 
+        hc_add_theme(thm()) %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
+                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))
+    }
+    else
+    {
+      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
+        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
+        hc_yAxis(title=list(text='Crime per person')) %>% 
+        hc_title(text = "Crime Against Income by Zipcode") %>% 
+        hc_subtitle(text = "Using 2015 crime data") %>% 
+        hc_tooltip(useHTML = TRUE, headerFormat = "", 
+                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
+                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
+    }
+  })
+  
 }

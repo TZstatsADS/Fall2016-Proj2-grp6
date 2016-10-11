@@ -6,14 +6,13 @@ library("viridisLite")
 library("markdown")
 library("quantmod")
 library("tidyr")
-#library("ggplot2")
 library("treemap")
 library("forecast")
 library("DT")
-library(shiny)
-library(leaflet)
-library(plotly)
-library(wordcloud2)
+library("shiny")
+library("leaflet")
+library("plotly")
+library("wordcloud2")
 rm(list = ls())
 
 dashboardPage(
@@ -22,11 +21,10 @@ dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Map", tabName = "map", icon = icon("map-marker")),
-      menuItem("Examples", tabName = "examples", icon = icon("bar-chart")),
       menuItem("Time Series", tabName = "ts", icon = icon("line-chart")),
-      menuItem("Plugins", tabName = "plugins", icon = icon("line-chart")),
-      menuItem("Public Facilities",tabName = "public", icon = icon("list-alt")),
-      menuItem("311 Complaint",tabName = "311", icon = icon("bar-chart"))
+      menuItem("Public Facilities Allocation",tabName = "public", icon = icon("list-alt")),
+      menuItem("311 Complaint",tabName = "311", icon = icon("bar-chart")),
+      menuItem("Prediction", tabName = "predict", icon = icon("line-chart"))
     ),
     div(includeMarkdown("crimeinfo.md"), style = "padding:10px")
   ),
@@ -34,13 +32,14 @@ dashboardPage(
     tags$head(tags$script(src = "js/ga.js")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "css/custom_fixs.css")),
     tabItems(
+      
+      ################################################################################################
       tabItem(tabName = "map", 
               sidebarLayout(position = "right", 
                   sidebarPanel(
                          h4("Filter"),
                           
                          # widget for crime type
-                         
                          checkboxGroupInput("Crime_Type", label = "Crime_Type",
                                              choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
                                                          "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
@@ -70,9 +69,8 @@ dashboardPage(
               )
       ), 
               
-              
-              
-      tabItem(tabName = "examples",
+      ################################################################################################              
+      tabItem(tabName = "ts",
               fluidRow(
                 column(4, selectInput("theme", label = "Theme",
                                       choices = c(FALSE, "fivethirtyeight", "economist", "dotabuff",
@@ -83,12 +81,7 @@ dashboardPage(
                 column(4, selectInput("exporting", label = "Exporting enabled", choices = c(FALSE, TRUE)))
                 
               ),
-              box(width = 6, highchartOutput("highchart")),
-              #box(width = 6, highchartOutput("highmap")),
-              box(width = 6, highchartOutput("highohlc")),
-              box(width = 6, highchartOutput("highscatter")),
-              box(width = 6, highchartOutput("highstreemap")),
-              box(width = 6, highchartOutput("highheatmap")),
+              box(width = 12, highchartOutput("highheatmap")),
               box(width = 10, highchartOutput("highstock")),
               box(width = 2, title = "Filter",
                   checkboxGroupInput("Crimetype", label = "Crime Type: ",
@@ -101,23 +94,21 @@ dashboardPage(
                   actionButton("button2", "Update", 
                                style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
               ),
-      tabItem(tabName = "ts",
-              fluidRow(
-                column(4, selectInput("ts", label = "Time series",
-                                      choices = c("WWWusage", "AirPassengers",
-                                                  "ldeaths", "USAccDeaths")))
-              ),
-              box(width = 12, highchartOutput("tschart")),
-              box(width = 6, highchartOutput("tsforecast")),
-              box(width = 6, dataTableOutput("dfforecast")),
-              box(width = 6, highchartOutput("tsacf")),
-              box(width = 6, highchartOutput("tspacf"))
-              ),
-    
-      tabItem(tabName = "plugins",
-              box(width = 12, highchartOutput("pluginsfa"))
-              ),
+      
+      ################################################################################################              
       tabItem(tabName = "public",
+              absolutePanel(
+                bottom = 120, right = 30, width = 300,
+                height = "auto",draggable = TRUE, 
+                wellPanel(
+                  HTML(markdownToHTML(fragment.only=TRUE, text=c(
+                    "PUBLIC FACILITY: Hospital, Government, Factory, etc.",
+                    "ENTERTAINMENT: Theater, Recreational Facility, Hotel, etc.",
+                    "RESIDENTIAL AREA: Apartment, Condo, etc."
+                  )))
+                  ),
+                style = "opacity: 0.92"
+                  ),
               sidebarLayout(position = "right", 
                             sidebarPanel(
                               h4("Filter"),
@@ -143,6 +134,8 @@ dashboardPage(
                               highchartOutput("facilitymap", width = "100%", height = 650)
                             ))
               ),
+      
+      ################################################################################################                    
       tabItem(tabName = "311",
              # sidebarLayout(position = "right",
                             fluidRow(
@@ -167,7 +160,17 @@ dashboardPage(
                           #  )),
               box(width = 12,wordcloud2Output("wordcloud", width = "100%", height = "400px")),
               box(width = 12, plotlyOutput("ggplotly"))
-              )
+              ),
+      
+      ################################################################################################                   
+      tabItem(tabName = "predict",
+              fluidRow(
+                column(6, selectInput("ts", label = "Time series",
+                                      choices = c("WWWusage", "AirPassengers",
+                                                  "ldeaths", "USAccDeaths")))
+              ),
+              box(width = 12, highchartOutput("highscatter"))
+      )
       )
     )
   )
