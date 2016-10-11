@@ -11,11 +11,6 @@ dscounts <- dplyr::count(diamonds, cut) %>%
   setNames(c("name", "value")) %>% 
   list.parse3()
 
-dsheatmap <- tbl_df(expand.grid(seq(12) - 1, seq(5) - 1)) %>% 
-  mutate(value = abs(seq(nrow(.)) + 10 * rnorm(nrow(.))) + 10,
-         value = round(value, 2)) %>% 
-  list.parse2()
-
 f <- exp
 
 dshmstops <- data.frame(q = c(0, f(1:5)/f(5)), c = substring(viridis(5 + 1), 0, 7)) %>% 
@@ -29,7 +24,7 @@ library(dplyr)
 #library(plotly)
 
 
-setwd("/Users/jiwenyou/Desktop")
+setwd("~/Github/")
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -43,12 +38,24 @@ names(crime_data)[names(crime_data)=='longitude']<-'lng'
 ####### Minghao's part
 
 data <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
-rownames(data) <- as.Date(data$Date)
+rownames(data) <- seq.Date(as.Date("2006-01-01"), as.Date("2015-12-31"), "days")
 data <- data[,3:9]
 colnames(data) <- c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
                     "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
                     "RAPE", "MURDER")
 data.xts <- as.xts(data)
+data.mon <- apply.monthly(data.xts, mean)
+data.mon.sum <- apply(data.mon, 1, sum)
+
+dsheatmap <- tbl_df(expand.grid(seq(12) - 1, seq(10) - 1)) %>% 
+  mutate(value = data.mon.sum) %>% 
+  list_parse2()
+
+stops <- data.frame(q = 0:4/4,
+                    c = rev(substring(heat.colors(4 + 1), 0, 7)),
+                    stringsAsFactors = FALSE)
+stops <- list_parse2(stops)
+
 
 
 ###### Jiwen's part
@@ -175,7 +182,7 @@ function(input, output) {
   output$highstock <- renderHighchart({
     filtered_preddata <- data.xts[,crimetype()]
     
-    plot_object <- hcbase() 
+    plot_object <- hcbase() %>% hc_title(text = "Crime Time Series By Crime Type")
     
     for(i in 1: ncol(filtered_preddata)){
       plot_object <- plot_object %>% 
@@ -234,7 +241,6 @@ function(input, output) {
                                                sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
     }
   })
-  ###
   
 
   output$highstreemap <- renderHighchart({
@@ -254,14 +260,18 @@ function(input, output) {
   output$highheatmap <- renderHighchart({
     
     hcbase() %>% 
+      hc_title(text = "Monthly Total Crime Number") %>%
       hc_chart(type = "heatmap") %>% 
       hc_xAxis(categories = month.abb) %>% 
-      hc_yAxis(categories = 2016 - length(dsheatmap)/12 + seq(length(dsheatmap)/12)) %>% 
-      hc_add_series(name = "value", data = dsheatmap) %>% 
-      hc_colorAxis(min = 0) 
+      hc_yAxis(categories = seq(2006, 2015, by = 1)) %>% 
+      hc_add_series(name = "Crime", data = dsheatmap) %>% 
+      hc_colorAxis(stops = stops, min = 200, max = 400) 
     
   })
   
+  
+  
+  ####### Page 3
   ts <- reactive({
     
     get(input$ts)
