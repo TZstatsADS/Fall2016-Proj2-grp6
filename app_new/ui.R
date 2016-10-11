@@ -12,7 +12,8 @@ library("forecast")
 library("DT")
 library(shiny)
 library(leaflet)
-#library(plotly)
+library(plotly)
+library(wordcloud2)
 rm(list = ls())
 
 dashboardPage(
@@ -24,7 +25,8 @@ dashboardPage(
       menuItem("Examples", tabName = "examples", icon = icon("bar-chart")),
       menuItem("Time Series", tabName = "ts", icon = icon("line-chart")),
       menuItem("Plugins", tabName = "plugins", icon = icon("line-chart")),
-      menuItem("Public Facilities",tabName = "public", icon = icon("list-alt"))
+      menuItem("Public Facilities",tabName = "public", icon = icon("list-alt")),
+      menuItem("311 Complaint",tabName = "311", icon = icon("bar-chart"))
     ),
     div(includeMarkdown("crimeinfo.md"), style = "padding:10px")
   ),
@@ -140,6 +142,23 @@ dashboardPage(
                               #plotOutput("facilitymap", width = "100%", height = 700)
                               highchartOutput("facilitymap", width = "100%", height = 650)
                             ))
+              ),
+      tabItem(tabName = "311",
+              sidebarLayout(position = "right",
+                            sidebarPanel(
+                              h4("Filter"),
+                              checkboxGroupInput("Crime.Type", label = "Crime Type",
+                                                 choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
+                                                             "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
+                                                             "MURDER & NON-NEGL. MANSLAUGHTE","All Crime","No Crime"),
+                                                 selected = c("BURGLARY")),
+                              submitButton("Update"),
+                              style = "opacity : 0.85"
+                            ),
+                            mainPanel(
+                              wordcloud2Output("wordcloud", width = "100%", height = "400px")
+                            )),
+              box(width = 12, plotlyOutput("ggplotly"))
               )
       )
     )

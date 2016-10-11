@@ -24,7 +24,7 @@ library(dplyr)
 #library(plotly)
 
 
-setwd("~/Github/")
+setwd("/Users/yueqizhang/Documents/w5243 ads/project2")
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -63,6 +63,19 @@ stops <- list_parse2(stops)
 load("Fall2016-Proj2-grp6/data/public_count.RData")
 load("Fall2016-Proj2-grp6/data/public_whole.RData")
 load("Fall2016-Proj2-grp6/data/crime_count.RData")
+
+
+###### Yueqi's part
+normal<-read.csv("Fall2016-Proj2-grp6/data/type of 311 normal.csv")
+crime<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime.csv")
+crime.murder<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime murder.csv")
+crime.burglary<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime burglary.csv")
+crime.felony<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime FELONY ASSAULT.csv")
+crime.glmv<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime GRAND LARCENY OF MOTOR VEHICLE.csv")
+crime.gl<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime GRAND LARCENY.csv")
+crime.rape<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime RAPE.csv")
+crime.robbery<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime ROBBERY.csv")
+barplotdata<-read.csv("Fall2016-Proj2-grp6/data/barplotdata.csv",stringsAsFactors = FALSE)
 
 
 function(input, output) {
@@ -447,5 +460,116 @@ function(input, output) {
                    pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
                                                sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
     }
+  })
+  
+  
+  # Page 311
+  crime.type<-reactive({
+    crime.type<-input$Crime.Type
+  })
+  
+  wc<-reactive({
+    if(crime.type()=='BURGLARY'){
+      wc<-crime.burglary
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc$word<-as.character(wc$word)
+      #wc[,2]<-as.numeric(levels(wc[,2]))[wc[,2]]
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='FELONY ASSAULT')
+    {
+      wc<-crime.felony
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='GRAND LARCENY')
+    {
+      wc<-crime.gl
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    
+    if (crime.type()=='GRAND LARCENY OF MOTOR VEHICLE')
+    {
+      wc<-crime.glmv
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='RAPE')
+    {
+      wc<-crime.rape
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='ROBBERY')
+    {
+      wc<-crime.robbery
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='MURDER & NON-NEGL. MANSLAUGHTE')
+    {
+      wc<-crime.murder
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='All Crime')
+    {
+      wc<-crime
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    
+    if (crime.type()=='No Crime')
+    {
+      wc<-normal
+      wc<-t(wc)
+      colnames(wc)<-c('word','freq')
+      #wc[,1]<-as.character(wc[,1])
+      #wc[,2]<-as.numeric(as.character(wc[,2]))
+      #wc<-data.frame(wc)
+    }
+    wc
+  })
+  
+  output$wordcloud <- renderWordcloud2({
+    data_wordcloud<-data.frame(wc())
+    data_wordcloud$word<-as.character(data_wordcloud$word)
+    data_wordcloud$freq<-as.numeric(levels(data_wordcloud$freq))[data_wordcloud$freq]
+    wordcloud2(data_wordcloud,size = 1,shape = 'circle')
+  })
+  
+  output$ggplotly<-renderPlotly({
+    g<-ggplot(barplotdata,aes(x=Type,fill=Crime))+geom_bar(position="dodge")+xlab(" ")+ylab("Complaint Number")+theme(axis.text.x=element_text(vjust = 1, hjust = 0.5,angle = 45))
+    ggplotly(g)
   })
 }
