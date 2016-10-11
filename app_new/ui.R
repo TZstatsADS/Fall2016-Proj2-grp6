@@ -144,20 +144,28 @@ dashboardPage(
                             ))
               ),
       tabItem(tabName = "311",
-              sidebarLayout(position = "right",
-                            sidebarPanel(
-                              h4("Filter"),
-                              checkboxGroupInput("Crime.Type", label = "Crime Type",
-                                                 choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
-                                                             "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
-                                                             "MURDER & NON-NEGL. MANSLAUGHTE","All Crime","No Crime"),
-                                                 selected = c("BURGLARY")),
-                              submitButton("Update"),
-                              style = "opacity : 0.85"
+             # sidebarLayout(position = "right",
+                            fluidRow(
+                              column(4, selectInput("Crime.Type", label = "Crime Type", 
+                                                    choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
+                                                                "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
+                                                                "MURDER & NON-NEGL. MANSLAUGHTE","All Crime","No Crime")))
+                           
                             ),
-                            mainPanel(
-                              wordcloud2Output("wordcloud", width = "100%", height = "400px")
-                            )),
+                          #  sidebarPanel(
+                           #   h4("Filter"),
+                          #    checkboxGroupInput("Crime.Type", label = "Crime Type",
+                                     #            choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
+                                    #                         "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
+                                   #                          "MURDER & NON-NEGL. MANSLAUGHTE","All Crime","No Crime"),
+                                  #               selected = c("BURGLARY"))
+                             # submitButton("Update"),
+                             # style = "opacity : 0.85"
+                        #    ),
+                        #    mainPanel(
+                          #    wordcloud2Output("wordcloud", width = "100%", height = "400px")
+                          #  )),
+              box(width = 12,wordcloud2Output("wordcloud", width = "100%", height = "400px")),
               box(width = 12, plotlyOutput("ggplotly"))
               )
       )
