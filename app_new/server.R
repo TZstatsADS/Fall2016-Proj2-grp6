@@ -146,9 +146,7 @@ function(input, output) {
   hcbase <- reactive({
     
     hc <- highchart() 
-    if (input$credits)
-      hc <- hc %>% hc_credits(enabled = TRUE, text = "Highcharter", href = "http://jkunst.com/highcharter/")
-    
+
     if (input$exporting)
       hc <- hc %>% hc_exporting(enabled = TRUE)
     if (input$theme != FALSE) {

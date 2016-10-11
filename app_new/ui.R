@@ -77,7 +77,6 @@ dashboardPage(
                                                   "darkunica", "gridlight",
                                                   "sandsignika", "null", "handdrwran",
                                                   "chalk"))),
-                column(4, selectInput("credits", label = "Credits enabled", choices = c(FALSE, TRUE))),
                 column(4, selectInput("exporting", label = "Exporting enabled", choices = c(FALSE, TRUE)))
                 
               ),
