@@ -539,15 +539,15 @@ function(input, output) {
       #wc<-data.frame(wc)
     }
     
-    if (crime.type()=='All Crime')
-    {
-      wc<-crime
-      wc<-t(wc)
-      colnames(wc)<-c('word','freq')
+   # if (crime.type()=='All Crime')
+   # {
+   #   wc<-crime
+    #  wc<-t(wc)
+     # colnames(wc)<-c('word','freq')
       #wc[,1]<-as.character(wc[,1])
       #wc[,2]<-as.numeric(as.character(wc[,2]))
       #wc<-data.frame(wc)
-    }
+   # }
     
     if (crime.type()=='No Crime')
     {

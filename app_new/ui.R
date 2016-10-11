@@ -149,7 +149,7 @@ dashboardPage(
                               column(4, selectInput("Crime.Type", label = "Crime Type", 
                                                     choices = c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY",
                                                                 "GRAND LARCENY OF MOTOR VEHICLE", "RAPE", "ROBBERY",
-                                                                "MURDER & NON-NEGL. MANSLAUGHTE","All Crime","No Crime")))
+                                                                "MURDER & NON-NEGL. MANSLAUGHTE","No Crime")))
                            
                             ),
                           #  sidebarPanel(
