@@ -130,8 +130,11 @@ dashboardPage(
                                                               "GRAND LARCENY OF MOTOR VEHICLE", "RAPE","ROBBERY","MURDER & NON-NEGL. MANSLAUGHTE"))
                             ),
                             mainPanel(
+                              tabsetPanel(
+                                tabPanel("Summary", highchartOutput("facilitymap", width = "100%", height = 650)), 
+                                tabPanel("Plot")
+                              )
                               #plotOutput("facilitymap", width = "100%", height = 700)
-                              highchartOutput("facilitymap", width = "100%", height = 650)
                             ))
               ),
       
