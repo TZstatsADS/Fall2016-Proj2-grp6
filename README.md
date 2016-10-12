@@ -32,7 +32,13 @@ The **learning goals** for this project is
 - business intelligence for data science
 - systems development/design life cycle
 - shiny app/shiny server
-	
+
+**Summary**
+The goal of this dashboard is to provide knowledge of how to appropriately apply and interpret statistics and data visualization relevant to crime analysis.
+We divided the dashboard into 6 parts: interactive map, time series analysis, public facilities allocation analysis, 311 complaints, prediction and raw data reference.
+We use dataset from NYC Opendata, United States Zip codes website to perform data visualization, statistical analysis and geographic mapping.
+This dashboard combines data explanatory methods and shiny application, which will people a comprehensive understanding of New York City Crime Status.
+
 **Contribution statement**: 
 + Jiwen You :
 	+ Transformed the longitude and latitude data in the crime data set to zipcode
@@ -71,6 +77,14 @@ The **learning goals** for this project is
 	+ Design and plot the frame of Shiny dashboard.
 	+ Collected the statistics data by zip code.
 	+ Built raw data set page for user reference and downloading.
+
++ Youzhu Liu: 
+
+	+ Improved ui.R and server.R of the crime map by adding clustering options.
+	+ Design and plot the frame of Shiny dashboard.
+	+	Collected the statistics data by zip code.
+	+ Built raw data set page for user reference and downloading.
+
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
