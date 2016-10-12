@@ -78,13 +78,6 @@ This dashboard combines data explanatory methods and shiny application, which wi
 	+ Collected the statistics data by zip code.
 	+ Built raw data set page for user reference and downloading.
 
-+ Youzhu Liu: 
-
-	+ Improved ui.R and server.R of the crime map by adding clustering options.
-	+ Design and plot the frame of Shiny dashboard.
-	+	Collected the statistics data by zip code.
-	+ Built raw data set page for user reference and downloading.
-
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
