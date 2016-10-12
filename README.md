@@ -12,7 +12,12 @@ Term: Fall 2016
 	+ Yueqi Zhang
 	+ Minghao Dai
 	
-+ Project summary: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
++ Project summary:
+The goal of this dashboard is to provide knowledge of how to appropriately apply and interpret statistics and data visualization relevant to crime analysis.
+We divided the dashboard into 6 parts: interactive map, time series analysis, public facilities allocation analysis, 311 complaints, prediction and raw data reference.
+We use dataset from NYC Opendata, United States Zip codes website to perform data visualization, statistical analysis and geographic mapping.
+This dashboard combines data explanatory methods and shiny application, which will people a comprehensive understanding of New York City Crime Status.
+.
 
 In this second project of Applied Data Science, we will carry out *Exploratory Data Analysis and Visualization* via a shiny app on a topic about open data released from the [New York City open data portal](https://nycopendata.socrata.com/). See [Project 2 Description](doc/project2_desc.md) for more details.  
 
@@ -57,6 +62,13 @@ The **learning goals** for this project is
 	+ Ploted wordcloud of complaint types to see the rough frequence of each complaint within every crime.
 	+ Compared the difference of complaints situation between the place of high-frequency crime and normal place by histogram.
 	+ Builded R shiny files to show the result I get. 
+	
++ Youzhu Liu: 
+
+	+ Improved ui.R and server.R of the crime map by adding clustering options.
+	+ Design and plot the frame of Shiny dashboard.
+	+ Collected the statistics data by zip code.
+	+ Built raw data set page for user reference and downloading.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
