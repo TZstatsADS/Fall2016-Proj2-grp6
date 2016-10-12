@@ -1,6 +1,9 @@
 library(shiny)
 library(leaflet)
 library(data.table)
+library(choroplethrZip)
+library(devtools)
+install_github('arilamstein/choroplethrZip@v1.5.0')
 
 
 setwd("~/Github/")
@@ -257,6 +260,9 @@ function(input, output) {
       filter(NEW_CATEGORY %in% ptype()) %>%
       rename(pvalue=value)
   })
+  filtered_facility_data1 <-reactive({
+    filtered_facility_data1 <- filtered_facility_data() %>% rename(value=pvalue)
+  })
   filtered_p_crime_data <- reactive({
     #filter by crime type
     filtered_p_crime_data <- crime_count %>% 
@@ -278,7 +284,7 @@ function(input, output) {
     #fit <- cbind(merge_data$pvalue,lw$fitted)
   })
   
-  output$facilitymap <- renderHighchart({
+  output$facilitymap1 <- renderHighchart({
       hchart(merge_data(), "point", x = pvalue, y = cvalue, group = colour) %>% 
         hc_xAxis(title=list(text = 'Number of Public Facilities')) %>% 
         hc_yAxis(title=list(text='Number of Crimes')) %>% 
@@ -287,6 +293,17 @@ function(input, output) {
         hc_tooltip(useHTML = TRUE, headerFormat = "", 
                    pointFormat = tooltip_table(c("Zipcode", "Public Facility Count","Crime Count"),
                                                sprintf("{point.%s}",c("region", "pvalue",'cvalue'))))
+  })
+  
+  # New York City is comprised of 5 counties: Bronx, Kings (Brooklyn), New York (Manhattan), 
+  # Queens, Richmond (Staten Island). Their numeric FIPS codes are:
+  nyc_fips = c(36005, 36047, 36061, 36081, 36085)
+  output$facilitymap2 <- renderPlot({
+
+    zip_choropleth(filtered_facility_data1(),
+                   title       = paste("Mahhattan", ptype(),"Locations"),
+                   legend      = paste("Number of", ptype()),
+                   county_zoom = nyc_fips)
   })
   
   ##################################################################################

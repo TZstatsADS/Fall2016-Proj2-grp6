@@ -137,8 +137,8 @@ dashboardPage(
                             ),
                             mainPanel(
                               tabsetPanel(
-                                tabPanel("Summary", highchartOutput("facilitymap", width = "100%", height = 650)), 
-                                tabPanel("Plot")
+                                tabPanel("Summary", highchartOutput("facilitymap1", width = "100%", height = 650)), 
+                                tabPanel("Plot",plotOutput("facilitymap2", width = "100%", height = 700))
                               )
                               #plotOutput("facilitymap", width = "100%", height = 700)
                             ))
