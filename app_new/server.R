@@ -488,6 +488,36 @@ function(input, output) {
   })
   ######################################################################
   
+  ######################################################################
+  load('Fall2016-Proj2-grp6/data/crime_ratio_result_part.RData')
+  crime_ratio_data <- reactive({
+    crime_ratio_result_part[1:input$scatterD3_nb,]
+  })
+  
+  output$scatterPlot <- renderScatterD3({
+    x_limit<-as.numeric(quantile(crime_ratio_data()[,input$scatterD3_x],0.98))
+    y_limit<-as.numeric(quantile(crime_ratio_data()[,input$scatterD3_y],0.98))
+    scatterD3(x = crime_ratio_data()[,input$scatterD3_x],
+              y = crime_ratio_data()[,input$scatterD3_y],
+              #lab = rownames(data()),
+              xlab = input$scatterD3_x,
+              ylab = input$scatterD3_y,
+              xlim =c(0,x_limit),
+              ylim =c(0,y_limit),
+              col_var = crime_ratio_data()$murder_count,
+              col_lab = '1 means murder',
+              ellipses = input$scatterD3_ellipses,
+              symbol_var = crime_ratio_data()$murder_count,
+              symbol_lab = '+ means murder',
+              point_opacity = input$scatterD3_opacity,
+              labels_size = 10,
+              transitions = TRUE,
+              lasso = TRUE,
+              lasso_callback = "function(sel) {alert(sel.data().map(function(d) {return d.lab}).join('\\n'));}")
+  })
+  
+  #######################################################################
+  
   ################data set reference########################################################
   output$table <- DT::renderDataTable(DT::datatable({
     data2

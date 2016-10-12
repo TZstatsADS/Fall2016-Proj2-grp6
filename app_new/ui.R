@@ -13,6 +13,7 @@ library("shiny")
 library("leaflet")
 library("plotly")
 library("wordcloud2")
+library('scatterD3')
 rm(list = ls())
 
 dashboardPage(
@@ -179,7 +180,37 @@ dashboardPage(
       tabItem(tabName = "predict",
               box(width = 12, highchartOutput("highscatter")),
               box(width = 6, plotlyOutput("crime_30_days")),
-              box(width = 6, plotOutput("Distribution_of_crime_interval"))
+              box(width = 6, plotOutput("Distribution_of_crime_interval")),
+              sidebarLayout(
+                sidebarPanel(
+                  sliderInput("scatterD3_nb", "Number of observations",
+                              min = 100, max = 5600, step = 100, value = 1000),
+                  selectInput("scatterD3_x", "x variable :",
+                              choices = c("BURGLARY" = "burglary",
+                                          "FELONY ASSAULT" = "felony",
+                                          "GRAND LARCENY" = "larceny",
+                                          "GRAND LARCENY OF MOTOR VEHICLE" = "larceny_motor",
+                                          "MURDER & NON-NEGL. MANSLAUGHTE" = "murder",
+                                          "ROBBERY" = "robbery",
+                                          'RAPE'='rape'),
+                              selected = "felony"),
+                  selectInput("scatterD3_y", "y variable :",
+                              choices = c("BURGLARY" = "burglary",
+                                          "FELONY ASSAULT" = "felony",
+                                          "GRAND LARCENY" = "larceny",
+                                          "GRAND LARCENY OF MOTOR VEHICLE" = "larceny_motor",
+                                          "MURDER & NON-NEGL. MANSLAUGHTE" = "murder",
+                                          "ROBBERY" = "robbery",
+                                          'RAPE'='rape'),
+                              selected = "robbery"),
+                  checkboxInput("scatterD3_ellipses", "Confidence ellipses", value = FALSE),
+                  sliderInput("scatterD3_opacity", "Points opacity :", min = 0, max = 1, value = 1, step = 0.05),
+                  tags$p(actionButton("scatterD3-reset-zoom", HTML("<span class='glyphicon glyphicon-search' aria-hidden='true'></span> Reset Zoom"))),
+                  tags$ul(tags$li(tags$a(href = "https://github.com/juba/scatterD3", "scatterD3 on GitHub")),
+                          tags$li(tags$a(href = "https://github.com/TZstatsADS/Fall2016-Proj2-grp6", "This app on GitHub")))
+                ),
+                mainPanel(scatterD3Output("scatterPlot", height = "700px"))
+              )
       ),
       ################################################################################################ 
       tabItem(tabName = "dataset",
