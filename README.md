@@ -41,7 +41,7 @@ This dashboard combines data explanatory methods and shiny application, which wi
 
 **Contribution statement**: 
 + Jiwen You :
-	+ Transformed the longitude and latitude data in the crime data set to zipcode for the crime dataset
+	+ Transformed the longitude and latitude into zipcode for the crime dataset
 	+ Extracted raw data and create RData file for project use
 	+ Completed the statistical analysis and R Shiny demonstration for the public facility allocation section
 	+ Edited, consolidated and cleaned statements and scripts
