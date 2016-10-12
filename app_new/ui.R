@@ -16,7 +16,7 @@ library("wordcloud2")
 rm(list = ls())
 
 dashboardPage(
-  skin = "blue",
+  skin = "black",
   dashboardHeader(title = "Crime Analysis", disable = FALSE),
   dashboardSidebar(
     sidebarMenu(
