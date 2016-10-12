@@ -51,6 +51,7 @@ The **learning goals** for this project is
 	+ Helped teammates to learn the Shiny and help them to debug.
 	
 + Yueqi Zhang:
+
         + Extracted 311 complaint data around the places of each type of crime seperately
 	+ Calculated the number of various complaints for each type of crime 
 	+ Ploted wordcloud of complaint types to see the rough frequence of each complaint within every crime.
