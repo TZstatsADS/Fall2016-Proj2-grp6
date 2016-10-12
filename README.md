@@ -50,6 +50,12 @@ The **learning goals** for this project is
 	+ Ploted the scatterD3 map in Prediction section to analyze whether can use crime to predict murder or not
 	+ Helped teammates to learn the Shiny and help them to debug.
 	
++ Yueqi Zhang:
+        + Extracted 311 complaint data around the places of each type of crime seperately
+	+ Calculated the number of various complaints for each type of crime 
+	+ Ploted wordcloud of complaint types to see the rough frequence of each complaint within every crime.
+	+ Compared the difference of complaints situation between the place of high-frequency crime and normal place by histogram.
+	+ Builded R shiny files to show the result I get. 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
