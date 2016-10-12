@@ -26,6 +26,7 @@ In this second project of Applied Data Science, we will carry out *Exploratory D
 ```
 
 ![screenshot](doc/app_screenshot.png)
+![screenshot](doc/app_screenshot1.png)
 
 The **learning goals** for this project is 
 - business intelligence for data science
@@ -45,6 +46,7 @@ The **learning goals** for this project is
 	+ Ploted crime count time series plot by date and crime type
 	+ Ploted all type crime number heat map by years and months
 	+ Made prediction for each crime type time serie by fitting a TBATS model
+	+ Completed the Time series part in our Shiny app
 
 + Weichuan Wu: 
          
