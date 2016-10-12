@@ -442,47 +442,18 @@ function(input, output) {
   
   ##### Prediction #######################################################################
   
-  thm<-reactive({
-    if (input$theme != FALSE) {
-      thm <- switch(input$theme,
-                    null = hc_theme_null(),
-                    economist = hc_theme_economist(),
-                    dotabuff = hc_theme_db(),
-                    darkunica = hc_theme_darkunica(),
-                    gridlight = hc_theme_gridlight(),
-                    sandsignika = hc_theme_sandsignika(),
-                    fivethirtyeight = hc_theme_538(),
-                    chalk = hc_theme_chalk(),
-                    handdrwran = hc_theme_handdrawn()
-      )}
-  })
-  
   output$highscatter <- renderHighchart({
     
-    if(input$theme != FALSE)
-    {
       hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
         hc_xAxis(title=list(text = 'Median Household Income')) %>% 
         hc_yAxis(title=list(text='Crime per person')) %>% 
         hc_title(text = "Crime Against Income by Zipcode") %>% 
         hc_subtitle(text = "Using 2015 crime data") %>% 
-        hc_add_theme(thm()) %>% 
         hc_tooltip(useHTML = TRUE, headerFormat = "", 
                    pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
                                                sprintf("{point.%s}",c("zip", "Population",'count_num'))))
-    }
-    else
-    {
-      hchart(crime_against_income_data, "point", x = Median.Household.Income, y = crime_per_person, size = count_num) %>% 
-        hc_xAxis(title=list(text = 'Median Household Income')) %>% 
-        hc_yAxis(title=list(text='Crime per person')) %>% 
-        hc_title(text = "Crime Against Income by Zipcode") %>% 
-        hc_subtitle(text = "Using 2015 crime data") %>% 
-        hc_tooltip(useHTML = TRUE, headerFormat = "", 
-                   pointFormat = tooltip_table(c("Zipcode", "Population","Crime Count"),
-                                               sprintf("{point.%s}",c("zip", "Population",'count_num'))))      
-    }
   })
+   
   
   #########################################################################
   load('Fall2016-Proj2-grp6/data/murder_result.RData')
