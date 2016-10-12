@@ -3,7 +3,7 @@
 
 Term: Fall 2016
 
-+ Team 8
++ Team 6
 + Projec title: NYC Crime Analysis
 + Team members
 	+ Weichuan Wu
