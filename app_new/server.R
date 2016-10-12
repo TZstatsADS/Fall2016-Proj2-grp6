@@ -1,15 +1,18 @@
+#########################################################################################################load library
 library(shiny)
 library(leaflet)
 library(data.table)
 library(choroplethrZip)
 library(devtools)
+library(MASS)
+library(vcd)
 #install_github('arilamstein/choroplethrZip@v1.5.0')
 
+#########################################################################################################set work directory
 setwd("C:/Study/Columbia/W4243_Applied_Data_Science/Project2/")
 
 
-###### Crime map datasets
-
+#########################################################################################################load data for crime map
 crime_data<-fread('Fall2016-Proj2-grp6/data/crime_data_1.csv')
 for(i in 2:20)
 {
@@ -21,8 +24,7 @@ names(crime_data)[names(crime_data)=='latitude']<-'lat'
 names(crime_data)[names(crime_data)=='longitude']<-'lng'
 
 
-###### Time series analysis datasets
-
+#########################################################################################################load data for Time series analysis
 dat <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
 data2 <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
 data2<-data2[,-1]
@@ -48,16 +50,12 @@ stops <- list_parse2(stops)
 load("Fall2016-Proj2-grp6/data/fit.RData")
 
 
-
-###### Public Facility Allocation datasets
-
+#########################################################################################################load data for  Public Facility Allocation
 load("Fall2016-Proj2-grp6/data/public_count.RData")
 load("Fall2016-Proj2-grp6/data/public_whole.RData")
 load("Fall2016-Proj2-grp6/data/crime_count.RData")
 
-
-###### 311 complaints datasets
-
+#########################################################################################################load data for  311 complaints
 normal<-read.csv("Fall2016-Proj2-grp6/data/type of 311 normal.csv")
 crime<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime.csv")
 crime.murder<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime murder.csv")
@@ -69,12 +67,16 @@ crime.rape<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime RAPE.csv")
 crime.robbery<-read.csv("Fall2016-Proj2-grp6/data/type of 311 with crime ROBBERY.csv")
 barplotdata<-read.csv("Fall2016-Proj2-grp6/data/barplotdata.csv",stringsAsFactors = FALSE)
 
-
-###### Prediction datasets
-
+#########################################################################################################load data forPrediction
 load('Fall2016-Proj2-grp6/data/crime_against_income_data.RData')
+load('Fall2016-Proj2-grp6/data/murder_result.RData')
+load('Fall2016-Proj2-grp6/data/other_result.RData')
+load('Fall2016-Proj2-grp6/data/hour_vector_total.RData')
+load('Fall2016-Proj2-grp6/data/crime_ratio_result_part.RData')
 
 
+
+#########################################################################################################main function begin
 function(input, output) {
   
   #### Map ######################################################################
@@ -455,9 +457,6 @@ function(input, output) {
   })
    
   
-  #########################################################################
-  load('Fall2016-Proj2-grp6/data/murder_result.RData')
-  load('Fall2016-Proj2-grp6/data/other_result.RData')
   murder_slices<-murder_result$crime_count
   other_slices<-other_result$crime_count
   lbls <- c("BURGLARY", "FELONY ASSAULT", "GRAND LARCENY", "GRAND LARCENY OF MOTOR VEHICLE",
@@ -473,12 +472,8 @@ function(input, output) {
              yaxis = list(title = 'Percent'), barmode = 'group')
   })
   
-  #######################################################################
-  load('Fall2016-Proj2-grp6/data/hour_vector_total.RData')
   output$Distribution_of_crime_interval<-renderPlot({
     # estimate the parameters
-    library(MASS)
-    library(vcd)
     parameters <- fitdistr(hour_vector_total, "exponential")
     hist(hour_vector_total, freq = FALSE, breaks = 1000, col='green',
          xlim = c(0, quantile(hour_vector_total, 0.995)),xlab='Crime Interval in hour',
@@ -486,10 +481,7 @@ function(input, output) {
     curve(dexp(x, rate = parameters$estimate), col = "red", add = TRUE)
     legend(25,0.1,'exponential with rate 0.14',col='red',pch='l')
   })
-  ######################################################################
-  
-  ######################################################################
-  load('Fall2016-Proj2-grp6/data/crime_ratio_result_part.RData')
+
   crime_ratio_data <- reactive({
     crime_ratio_result_part[1:input$scatterD3_nb,]
   })

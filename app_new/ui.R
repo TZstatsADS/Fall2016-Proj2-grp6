@@ -1,3 +1,4 @@
+#########################################################################################################load library
 library("shiny")
 library("shinydashboard")
 library("highcharter")
@@ -14,8 +15,11 @@ library("leaflet")
 library("plotly")
 library("wordcloud2")
 library('scatterD3')
+
+#########################################################################################################clear environment
 rm(list = ls())
 
+#########################################################################################################main page begin
 dashboardPage(
   skin = "black",
   dashboardHeader(title = "Crime Analysis", disable = FALSE),
@@ -35,7 +39,7 @@ dashboardPage(
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "css/custom_fixs.css")),
     tabItems(
       
-      ################################################################################################
+      ################################################################################################ crime map
       tabItem(tabName = "map", 
               sidebarLayout(position = "right", 
                   sidebarPanel(
@@ -71,7 +75,7 @@ dashboardPage(
               )
       ), 
               
-      ################################################################################################              
+      ################################################################################################   time series part           
       tabItem(tabName = "ts",
               fluidRow(
                 column(4, selectInput("theme", label = "Theme",
@@ -106,7 +110,7 @@ dashboardPage(
               
               ),
       
-      ################################################################################################              
+      ################################################################################################   public facility part           
       tabItem(tabName = "public",
               absolutePanel(
                 bottom = 120, right = 30, width = 300,
@@ -149,7 +153,7 @@ dashboardPage(
                             ))
               ),
       
-      ################################################################################################                    
+      ################################################################################################    311 complaints part                
       tabItem(tabName = "311",
              # sidebarLayout(position = "right",
                             fluidRow(
@@ -176,7 +180,7 @@ dashboardPage(
               box(width = 12, plotlyOutput("ggplotly"))
               ),
       
-      ################################################################################################                   
+      ################################################################################################  prediction part                 
       tabItem(tabName = "predict",
               box(width = 12, highchartOutput("highscatter")),
               box(width = 6, plotlyOutput("crime_30_days")),
@@ -212,7 +216,7 @@ dashboardPage(
                 mainPanel(scatterD3Output("scatterPlot", height = "700px"))
               )
       ),
-      ################################################################################################ 
+      ################################################################################################ data set part
       tabItem(tabName = "dataset",
               box(width = 12,
                 DT::dataTableOutput("table"),downloadButton('downloadData', 'Download')
