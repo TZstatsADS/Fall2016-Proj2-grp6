@@ -45,9 +45,9 @@ The **learning goals** for this project is
          
 	+ Processed the raw crime data for crime map and built the first version of ui.R and server.R by plot the crime map
 	+ Collected the statistics data by zip code and use it to draw the crime against income plot
-	+ Analyized the crime data and draw the 30 days accumulated crime plot
-	+ Analyized the crime interval distribution and make the plot
-	+ Ploted the scatterD3 map in Prediction section to analysize whether can use crime to predict murder or not
+	+ Analyzed the crime data and draw the 30 days accumulated crime plot
+	+ Analyzed the crime interval distribution and make the plot
+	+ Ploted the scatterD3 map in Prediction section to analyze whether can use crime to predict murder or not
 	+ Helped teammates to learn the Shiny and help them to debug.
 	
 
