@@ -185,6 +185,10 @@ function(input, output) {
     ts.ct <- input$ct
   })
   
+  cirange <- reactive({
+    cirange <- input$ci
+  })
+  
   output$highstock <- renderHighchart({
     filtered_preddata <- data.xts[,crime$type]
     
@@ -224,19 +228,33 @@ function(input, output) {
   
   output$forecast <- renderPlot({
     if (ts.ct() %in% "GRAND LARCENY") {
-      plot(forecast(GL.fit), main = ts.ct())
+      autoplot(forecast(GL.fit, level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "FELONY ASSAULT"){
-      plot(forecast(FA.fit), main = ts.ct())
+      autoplot(forecast(FA.fit, level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "ROBBERY"){
-      plot(forecast(RO.fit), main = ts.ct())
+      autoplot(forecast(RO.fit, level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "BURGLARY"){
-      plot(forecast(BU.fit), main = ts.ct())
+      autoplot(forecast(BU.fit, level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "GRAND LARCENY OF MOTOR VEHICLE"){
-      plot(forecast(MV.fit), main = ts.ct())
+      autoplot(forecast(MV.fit, level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "RAPE"){
-      plot(forecast(RA.fit), main = ts.ct())
+      autoplot(forecast(RA.fit, , level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } else if (ts.ct() %in% "MURDER"){
-      plot(forecast(MU.fit), main = ts.ct())
+      autoplot(forecast(MU.fit, , level = cirange()), 
+               main = paste(ts.ct(), "PREDICTION"), ylab = '')+
+               theme(axis.text.x=element_blank(), legend.position="none")
     } 
     
   })
