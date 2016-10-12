@@ -29,7 +29,7 @@ The **learning goals** for this project is
 	
 **Contribution statement**: 
 + Jiwen You :
-	+ Transform the longitude and latitude data in the crime data set to zipcode
+	+ Transformed the longitude and latitude data in the crime data set to zipcode
 	+ Extracted raw data and create RData file for project use
 	+ Completed the statistical analysis and R Shiny demonstration for the public facility allocation section
 	+ Edited, consolidated and cleaned statements and scripts
