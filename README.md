@@ -34,6 +34,12 @@ The **learning goals** for this project is
 	+ Completed the statistical analysis and R Shiny demonstration for the public facility allocation section
 	+ Edited, consolidated and cleaned statements and scripts
 
++ Minghao Dai:
+        + Extracted daily crime data set by crime type, saved as preddata.csv
+	+ Ploted crime count time series plot by date and crime type
+	+ Ploted all type crime number heat map by years and months
+	+ Made prediction for each crime type time serie by fitting a TBATS model
+
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
 ```
