@@ -52,7 +52,7 @@ The **learning goals** for this project is
 	
 + Yueqi Zhang:
 
-        + Extracted 311 complaint data around the places of each type of crime seperately
+	+ Extracted 311 complaint data around the places of each type of crime seperately
 	+ Calculated the number of various complaints for each type of crime 
 	+ Ploted wordcloud of complaint types to see the rough frequence of each complaint within every crime.
 	+ Compared the difference of complaints situation between the place of high-frequency crime and normal place by histogram.
