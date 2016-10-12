@@ -436,7 +436,7 @@ function(input, output) {
   })
   
   output$ggplotly<-renderPlotly({
-    g<-ggplot(barplotdata,aes(x=Type,fill=Crime))+geom_bar(position="dodge")+xlab(" ")+ylab("Complaint Number")+theme(axis.text.x=element_text(vjust = 1, hjust = 0.5,angle = 45))
+    g<-ggplot(barplotdata,aes(x=Type,fill=Crime))+geom_bar(position="dodge")+xlab(" ")+ylab("Complaint Percent *10000")+theme(axis.text.x=element_text(vjust = 1, hjust = 0.5,angle = 45))
     ggplotly(g)
   })
   
@@ -469,6 +469,7 @@ function(input, output) {
     plot_ly(crime_data_30days, x =lbls, y =murder_pct, type = 'bar', name = 'Murder Pct') %>%
       add_trace(x=lbls,y = other_pct, type='bar',name = 'Other Pct') %>%
       layout(title='30 days accumulated Crime Compare',
+             xaxis=list(title=''),
              yaxis = list(title = 'Percent'), barmode = 'group')
   })
   
