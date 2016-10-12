@@ -96,9 +96,12 @@ dashboardPage(
                 column(4, selectInput("ct", label = "Crime Type: ",
                                       choices = c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
                                                   "BURGLARY", "GRAND LARCENY OF MOTOR VEHICLE",
-                                                  "RAPE", "MURDER")))
-              ),
+                                                  "RAPE", "MURDER"))), 
+                column(4, sliderInput("ci", label = "Confidence Interval%: ", min = 0, 
+                                      max = 99, value = c(80, 95)))
+              ), 
               box(width = 12, plotOutput("forecast"))
+              
               ),
       
       ################################################################################################              
@@ -175,6 +178,13 @@ dashboardPage(
       tabItem(tabName = "predict",
               box(width = 12, highchartOutput("highscatter")),
               box(width = 6, plotlyOutput("crime_30_days"))
+      ),
+      ################################################################################################ 
+      tabItem(tabName = "dataset",
+              box(width = 12,
+                DT::dataTableOutput("table"),downloadButton('downloadData', 'Download')
+              )
+              
       )
       )
     )
