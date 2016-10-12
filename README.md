@@ -7,7 +7,7 @@ Term: Fall 2016
 + Projec title: Lorem ipsum dolor sit amet
 + Team members
 	+ Minghao Dai
-	+ team member 2
+	+ Jiwen You
 	+ team member 3
 	+ team member 4
 	+ team member 5
@@ -27,7 +27,12 @@ The **learning goals** for this project is
 - systems development/design life cycle
 - shiny app/shiny server
 	
-**Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
+**Contribution statement**: 
++ Jiwen You :
+	+ Transform the longitude and latitude data in the crime data set to zipcode
+	+ Extracted raw data and create RData file for project use
+	+ Completed the statistical analysis and R Shiny demonstration for the public facility allocation section
+	+ Edited, consolidated and cleaned statements and scripts
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 

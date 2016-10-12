@@ -6,7 +6,7 @@ library(devtools)
 install_github('arilamstein/choroplethrZip@v1.5.0')
 
 
-setwd("~/Github/")
+setwd("/Users/jiwenyou/Desktop/")
 
 
 ###### Crime map datasets
