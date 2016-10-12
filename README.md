@@ -33,12 +33,6 @@ The **learning goals** for this project is
 - systems development/design life cycle
 - shiny app/shiny server
 
-**Summary**
-The goal of this dashboard is to provide knowledge of how to appropriately apply and interpret statistics and data visualization relevant to crime analysis.
-We divided the dashboard into 6 parts: interactive map, time series analysis, public facilities allocation analysis, 311 complaints, prediction and raw data reference.
-We use dataset from NYC Opendata, United States Zip codes website to perform data visualization, statistical analysis and geographic mapping.
-This dashboard combines data explanatory methods and shiny application, which will people a comprehensive understanding of New York City Crime Status.
-
 **Contribution statement**: 
 + Jiwen You :
 	+ Transformed the longitude and latitude into zipcode for the crime dataset
