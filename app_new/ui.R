@@ -178,7 +178,8 @@ dashboardPage(
       ################################################################################################                   
       tabItem(tabName = "predict",
               box(width = 12, highchartOutput("highscatter")),
-              box(width = 6, plotlyOutput("crime_30_days"))
+              box(width = 6, plotlyOutput("crime_30_days")),
+              box(width = 6, plotOutput("Distribution_of_crime_interval"))
       ),
       ################################################################################################ 
       tabItem(tabName = "dataset",

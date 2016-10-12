@@ -3,9 +3,9 @@ library(leaflet)
 library(data.table)
 library(choroplethrZip)
 library(devtools)
-install_github('arilamstein/choroplethrZip@v1.5.0')
+#install_github('arilamstein/choroplethrZip@v1.5.0')
 
-setwd("/Users/jiwenyou/Desktop/")
+setwd("C:/Study/Columbia/W4243_Applied_Data_Science/Project2/")
 
 
 ###### Crime map datasets
@@ -501,6 +501,21 @@ function(input, output) {
       layout(title='30 days accumulated Crime Compare',
              yaxis = list(title = 'Percent'), barmode = 'group')
   })
+  
+  #######################################################################
+  load('Fall2016-Proj2-grp6/data/hour_vector_total.RData')
+  output$Distribution_of_crime_interval<-renderPlot({
+    # estimate the parameters
+    library(MASS)
+    library(vcd)
+    parameters <- fitdistr(hour_vector_total, "exponential")
+    hist(hour_vector_total, freq = FALSE, breaks = 1000, col='green',
+         xlim = c(0, quantile(hour_vector_total, 0.995)),xlab='Crime Interval in hour',
+         main='Distribution of crime interval')
+    curve(dexp(x, rate = parameters$estimate), col = "red", add = TRUE)
+    legend(25,0.1,'exponential with rate 0.14',col='red',pch='l')
+  })
+  ######################################################################
   
   ################data set reference########################################################
   output$table <- DT::renderDataTable(DT::datatable({
