@@ -16,7 +16,7 @@ library("wordcloud2")
 rm(list = ls())
 
 dashboardPage(
-  skin = "black",
+  skin = "blue",
   dashboardHeader(title = "Crime Analysis", disable = FALSE),
   dashboardSidebar(
     sidebarMenu(
@@ -24,7 +24,8 @@ dashboardPage(
       menuItem("Time Series", tabName = "ts", icon = icon("line-chart")),
       menuItem("Public Facilities Allocation",tabName = "public", icon = icon("list-alt")),
       menuItem("311 Complaint",tabName = "311", icon = icon("bar-chart")),
-      menuItem("Prediction", tabName = "predict", icon = icon("table"))
+      menuItem("Prediction", tabName = "predict", icon = icon("area-chart")),
+      menuItem("Data Reference",tabName = "dataset", icon = icon("table"))
     ),
     div(includeMarkdown("crimeinfo.md"), style = "padding:10px")
   ),
@@ -178,6 +179,13 @@ dashboardPage(
       tabItem(tabName = "predict",
               box(width = 12, highchartOutput("highscatter")),
               box(width = 6, plotlyOutput("crime_30_days"))
+      ),
+      ################################################################################################ 
+      tabItem(tabName = "dataset",
+              box(width = 12,
+                DT::dataTableOutput("table"),downloadButton('downloadData', 'Download')
+              )
+              
       )
       )
     )

@@ -6,7 +6,7 @@ library(devtools)
 install_github('arilamstein/choroplethrZip@v1.5.0')
 
 
-setwd("~/Github/")
+setwd("~/Desktop/哥大/fall 2016/5243 ads/project2")
 
 
 ###### Crime map datasets
@@ -25,6 +25,8 @@ names(crime_data)[names(crime_data)=='longitude']<-'lng'
 ###### Time series analysis datasets
 
 dat <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
+data2 <- read.csv('Fall2016-Proj2-grp6/data/preddata.csv')
+data2<-data2[,-1]
 rownames(dat) <- seq.Date(as.Date("2006-01-01"), as.Date("2015-12-31"), "days")
 data <- dat[,3:9]
 colnames(data) <- c("GRAND LARCENY", "FELONY ASSAULT", "ROBBERY", 
@@ -501,6 +503,16 @@ function(input, output) {
              yaxis = list(title = 'Percent'), barmode = 'group')
   })
   
-  ########################################################################
+  ################data set reference########################################################
+  output$table <- DT::renderDataTable(DT::datatable({
+    data2
+  }, rownames = FALSE))
   
+  output$downloadData <- downloadHandler(
+    filename = 'file.csv',
+    content = function(file) {
+      write.csv(data2, file,row.names=F)
+    }
+  )
+  ########################################################################
 }
