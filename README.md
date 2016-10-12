@@ -34,7 +34,7 @@ The **learning goals** for this project is
 	+ Completed the statistical analysis and R Shiny demonstration for the public facility allocation section
 	+ Edited, consolidated and cleaned statements and scripts
 
-+ Minghao Dai:
++ Minghao Dai:   
         + Extracted daily crime data set by crime type, saved as preddata.csv
 	+ Ploted crime count time series plot by date and crime type
 	+ Ploted all type crime number heat map by years and months
